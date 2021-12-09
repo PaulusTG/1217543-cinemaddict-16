@@ -1,14 +1,68 @@
-const createFooterStatsTemplate = () => (
-  '<p>130 291 movies inside</p>'
+const genreToFilterMap = {
+  'Family': (films) => films.filter((film) => film.info.genre.includes('Family')).length,
+  'Sci-Fi': (films) => films.filter((film) => film.info.genre.includes('Sci-Fi')).length,
+  'Action': (films) => films.filter((film) => film.info.genre.includes('Action')).length,
+  'Thriller': (films) => films.filter((film) => film.info.genre.includes('Thriller')).length,
+  'Horror': (films) => films.filter((film) => film.info.genre.includes('Horror')).length,
+  'Comedy': (films) => films.filter((film) => film.info.genre.includes('Comedy')).length,
+  'Drama': (films) => films.filter((film) => film.info.genre.includes('Drama')).length,
+  'Adventure': (films) => films.filter((film) => film.info.genre.includes('Adventure')).length,
+  'Animation': (films) => films.filter((film) => film.info.genre.includes('Animation')).length,
+};
+
+const createFooterStatsTemplate = (films) => (
+  `<p>${films.length} movies inside</p>`
 );
 
-const createStatsTemplate = () => (
-  `<section class="statistic">
-    <p class="statistic__rank">
-      Your rank
-      <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-      <span class="statistic__rank-label">Movie buff</span>
-    </p>
+const getTopGenre = (films) => Object.entries(genreToFilterMap).map(
+  ([genreName, countFilms]) => ({
+    name: genreName,
+    count: countFilms(films),
+  }),
+);
+
+const getTotalDuration = (films) => {
+  let totalHours = 0;
+  let totalMinutes = 0;
+
+  films.map((film) => {
+    if (film.isWatched) {
+      totalHours += +String(film.info.duration.format('h'));
+      totalMinutes += +String(film.info.duration.format('m'));
+    }
+  });
+  totalHours += (Math.floor(totalMinutes / 60));
+  totalMinutes -= (Math.floor(totalMinutes / 60)) * 60;
+
+  return `<p class="statistic__item-text">${totalHours} <span class="statistic__item-description">h</span> ${totalMinutes} <span class="statistic__item-description">m</span></p>`;
+};
+
+const getRank = (watched) => {
+  let rank = '';
+  if (+watched >= 1 && +watched <= 10) {
+    rank = 'Novice';
+  } else if (+watched >= 11 && +watched <= 20) {
+    rank = 'Fan';
+  } else if (+watched >= 21) {
+    rank = 'Movie buff';
+  }
+  return rank;
+};
+
+const createStatsTemplate = (films, watched) => {
+
+  const topGenres = getTopGenre(films).sort((a, b) => b.count - a.count);
+
+  const rankElement = +watched !== 0
+    ? `<p class="statistic__rank">
+        Your rank
+        <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
+        <span class="statistic__rank-label">${getRank(watched)}</span>
+      </p>`
+    : '';
+
+  return `<section class="statistic">
+    ${rankElement}
 
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
       <p class="statistic__filters-description">Show stats:</p>
@@ -32,15 +86,15 @@ const createStatsTemplate = () => (
     <ul class="statistic__text-list">
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">You watched</h4>
-        <p class="statistic__item-text">28 <span class="statistic__item-description">movies</span></p>
+        <p class="statistic__item-text">${watched} <span class="statistic__item-description">movies</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
-        <p class="statistic__item-text">69 <span class="statistic__item-description">h</span> 41 <span class="statistic__item-description">m</span></p>
+        ${getTotalDuration(films)}
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
-        <p class="statistic__item-text">Drama</p>
+        <p class="statistic__item-text">${topGenres[0].name}</p>
       </li>
     </ul>
 
@@ -51,7 +105,18 @@ const createStatsTemplate = () => (
       <canvas class="statistic__chart" width="1000"></canvas>
     </div>
 
-  </section>`
-);
+  </section>`;
+};
 
-export { createFooterStatsTemplate, createStatsTemplate };
+const createRankTemplate = (watched) => {
+  const rankElement = +watched !== 0
+    ? `<p class="profile__rating">${getRank(watched)}</p>`
+    : '';
+
+  return `<section class="header__profile profile">
+    ${rankElement}
+    <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
+  </section>`;
+};
+
+export { createFooterStatsTemplate, createStatsTemplate, createRankTemplate };
