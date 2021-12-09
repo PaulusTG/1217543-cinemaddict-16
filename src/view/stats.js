@@ -27,8 +27,8 @@ const getTotalDuration = (films) => {
 
   films.map((film) => {
     if (film.isWatched) {
-      totalHours += +String(film.info.duration.format('h'));
-      totalMinutes += +String(film.info.duration.format('m'));
+      totalHours += Number(film.info.duration.format('h'));
+      totalMinutes += Number(film.info.duration.format('m'));
     }
   });
   totalHours += (Math.floor(totalMinutes / 60));
@@ -39,11 +39,11 @@ const getTotalDuration = (films) => {
 
 const getRank = (watched) => {
   let rank = '';
-  if (+watched >= 1 && +watched <= 10) {
+  if (Number(watched) >= 1 && Number(watched) <= 10) {
     rank = 'Novice';
-  } else if (+watched >= 11 && +watched <= 20) {
+  } else if (Number(watched) >= 11 && Number(watched) <= 20) {
     rank = 'Fan';
-  } else if (+watched >= 21) {
+  } else if (Number(watched) >= 21) {
     rank = 'Movie buff';
   }
   return rank;
@@ -53,7 +53,7 @@ const createStatsTemplate = (films, watched) => {
 
   const topGenres = getTopGenre(films).sort((a, b) => b.count - a.count);
 
-  const rankElement = +watched !== 0
+  const rankElement = Number(watched) !== 0
     ? `<p class="statistic__rank">
         Your rank
         <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
@@ -109,7 +109,7 @@ const createStatsTemplate = (films, watched) => {
 };
 
 const createRankTemplate = (watched) => {
-  const rankElement = +watched !== 0
+  const rankElement = Number(watched) !== 0
     ? `<p class="profile__rating">${getRank(watched)}</p>`
     : '';
 

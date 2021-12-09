@@ -28,13 +28,13 @@ const renderTemplate = (container, template, place) => {
 };
 
 renderTemplate(mainElement, createMenuTemplate(filters), RenderPosition.AFTERBEGIN);
-// filmsWatched становится доступным только в этом месте \/
+
 const filmsWatched = document.querySelector('#history span').textContent;
 renderTemplate(mainElement, createStatsTemplate(films, filmsWatched), RenderPosition.BEFOREEND);
 renderTemplate(headerElement, createRankTemplate(filmsWatched), RenderPosition.BEFOREEND);
 
 renderTemplate(mainElement, createCardContainer(), RenderPosition.BEFOREEND);
-// cardContainer становится доступным только в этом месте \/
+
 const cardContainer = mainElement.querySelector('.films-list__container');
 
 for (let i = 0; i < Math.min(films.length, CARD_COUNT_PER_STEP); i++) {

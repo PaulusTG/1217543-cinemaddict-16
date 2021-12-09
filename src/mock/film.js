@@ -28,11 +28,11 @@ const generateGenre = () => {
 };
 
 const generateDirector = () => {
-  const director = ['Anthony Mann', 'Jonathan Favreau', 'Kevin Feige', 'Christopher Nolan', 'James Cameron', 'James Gunn Jr.'];
+  const directors = ['Anthony Mann', 'Jonathan Favreau', 'Kevin Feige', 'Christopher Nolan', 'James Cameron', 'James Gunn Jr.'];
 
-  const randomIndex = getRandomNumber(0, director.length - 1);
+  const randomIndex = getRandomNumber(0, directors.length - 1);
 
-  return director[randomIndex];
+  return directors[randomIndex];
 };
 
 const generateWriter = () => {
@@ -57,14 +57,14 @@ const generateCountry = () => {
 
 const generateEmoji = (count) => {
   const emojies = ['smile', 'sleeping', 'puke', 'angry'];
-  const emojiList = [];
+  const emojiesList = [];
 
   for (let i = 0; i < count; i++) {
     const randomIndex = getRandomNumber(0, emojies.length - 1);
-    emojiList.push(emojies[randomIndex]);
+    emojiesList.push(emojies[randomIndex]);
   }
 
-  return emojiList;
+  return emojiesList;
 };
 
 const generateCommentText = (count) => {
@@ -75,29 +75,29 @@ const generateCommentText = (count) => {
 
 const generateCommentAuthor = (count) => {
   const authors = ['Tim Macoveev', 'John Doe', 'Peter Fisk', 'Emma Kim', 'Gary Stopman', 'Anna Musk', 'Lisa Dover'];
-  const authorList = [];
+  const authorsList = [];
 
   for (let i = 0; i < count; i++) {
     const randomIndex = getRandomNumber(0, authors.length - 1);
-    authorList.push(authors[randomIndex]);
+    authorsList.push(authors[randomIndex]);
   }
 
-  return authorList;
+  return authorsList;
 };
 
 const generateCommentDatetime = (count) => {
-  const datetimeList = [];
+  const datetimesList = [];
 
   for (let i = 0; i < count; i++) {
-    datetimeList.push(dayjs().month(getRandomNumber(0, 11)).date(getRandomNumber(1, 31)).year(getRandomNumber(2005, 2021))
+    datetimesList.push(dayjs().month(getRandomNumber(0, 11)).date(getRandomNumber(1, 31)).year(getRandomNumber(2005, 2021))
       .hour(getRandomNumber(0, 23)).minute(getRandomNumber(0, 59)).format('YYYY/M/D H:m'));
   }
 
-  return datetimeList;
+  return datetimesList;
 };
 
 const generateDescription = () => {
-  const description = ['Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  const descriptions = ['Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     'Cras aliquet varius magna, non porta ligula feugiat eget.', 'Fusce tristique felis at fermentum pharetra.',
     'Aliquam id orci ut lectus varius viverra.', 'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
     'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
@@ -105,7 +105,7 @@ const generateDescription = () => {
     'Sed sed nisi sed augue convallis suscipit in sed felis.', 'Aliquam erat volutpat.',
     'Nunc fermentum tortor ac porta dapibus.', 'In rutrum ac purus sit amet tempus.'];
 
-  return getRandomRangeFromArray(description, getRandomNumber(1, 5)).join(' ');
+  return getRandomRangeFromArray(descriptions, getRandomNumber(1, 5)).join(' ');
 };
 
 const generateDate = () => dayjs().month(getRandomNumber(0, 11)).date(getRandomNumber(1, 31)).year(getRandomNumber(1900, 2000));
@@ -118,13 +118,18 @@ const generateDuration = () => {
 
 const generateFilmCard = () => {
   const title = generateTitle();
+  const rating = getRandomFloat(0, 10, 1);
+
   const date = generateDate();
   const duration = generateDuration();
+  const genre = generateGenre();
   const director = generateDirector();
   const writers = generateWriter().join(', ');
   const actors = generateActor().join(', ');
   const country = generateCountry();
-  const genre = generateGenre();
+
+  const poster = filmPosters[title];
+  const description = generateDescription();
 
   const count = getRandomNumber(0, 5);
   const emoji = generateEmoji(count);
@@ -132,9 +137,13 @@ const generateFilmCard = () => {
   const author = generateCommentAuthor(count);
   const datetime = generateCommentDatetime(count);
 
+  const isAddedToWatchlist = Boolean(getRandomNumber(0, 1));
+  const isWatched = Boolean(getRandomNumber(0, 1));
+  const isFavorite = Boolean(getRandomNumber(0, 1));
+
   return {
     title,
-    rating: getRandomFloat(0, 10, 1),
+    rating,
     info: {
       date,
       duration,
@@ -144,8 +153,8 @@ const generateFilmCard = () => {
       actors,
       country,
     },
-    poster: filmPosters[title],
-    description: generateDescription(),
+    poster,
+    description,
     comments: {
       count,
       emoji,
@@ -153,9 +162,9 @@ const generateFilmCard = () => {
       author,
       datetime,
     },
-    isAddedToWatchlist: Boolean(getRandomNumber(0, 1)),
-    isWatched: Boolean(getRandomNumber(0, 1)),
-    isFavorite: Boolean(getRandomNumber(0, 1)),
+    isAddedToWatchlist,
+    isWatched,
+    isFavorite,
   };
 };
 

@@ -1,9 +1,35 @@
+const defaultFilm = {
+  title: '',
+  rating: '0.0',
+  info: {
+    date: null,
+    duration: null,
+    genre: '',
+    director: '',
+    writers: '',
+    actors: '',
+    country: '',
+  },
+  poster: '',
+  description: '',
+  comments: {
+    count: 0,
+    emoji: '',
+    text: '',
+    author: '',
+    datetime: '',
+  },
+  isAddedToWatchlist: false,
+  isWatched: false,
+  isFavorite: false,
+};
+
 const createComment = (film) => {
   const { comments } = film;
-  const comment = [];
+  const commentsList = [];
 
   for (let i = 0; i < comments.count; i++) {
-    comment.push(
+    commentsList.push(
       `<li class="film-details__comment">
         <span class="film-details__comment-emoji">
           <img src="./images/emoji/${comments.emoji[i]}.png" width="55" height="55" alt="emoji-${comments.emoji[i]}">
@@ -20,20 +46,20 @@ const createComment = (film) => {
     );
   }
 
-  return comment;
+  return commentsList;
 };
 
-const createPopupTemplate = (film = {}) => {
+const createPopupTemplate = (film = defaultFilm) => {
   const {
-    title = '',
-    rating = '0.0',
+    title,
+    rating,
     info,
-    poster = '',
-    description = '',
+    poster,
+    description,
     comments,
-    isAddedToWatchlist = false,
-    isWatched = false,
-    isFavorite = false,
+    isAddedToWatchlist,
+    isWatched,
+    isFavorite,
   } = film;
 
   const watchlistClassName = isAddedToWatchlist
