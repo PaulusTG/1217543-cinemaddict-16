@@ -1,13 +1,4 @@
-const createCardContainer = () => (
-  `<section class="films">
-    <section class="films-list">
-      <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
-
-      <div class="films-list__container">
-      </div>
-    </section>
-  </section>`
-);
+import { createElement } from '../render.js';
 
 const createDescription = (description) => {
   if (description.length > 140) {
@@ -16,7 +7,7 @@ const createDescription = (description) => {
   return description;
 };
 
-const createCardTemplate = (film) => {
+const createFilmTemplate = (film) => {
   const {
     title,
     rating,
@@ -62,4 +53,29 @@ const createCardTemplate = (film) => {
     </article>`;
 };
 
-export { createCardContainer, createCardTemplate };
+class FilmView {
+  #element = null;
+  #film = null;
+
+  constructor(film) {
+    this.#film = film;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createFilmTemplate(this.#film);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
+
+export { FilmView };

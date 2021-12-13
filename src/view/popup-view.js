@@ -1,4 +1,6 @@
-const defaultFilm = {
+import { createElement } from '../render.js';
+
+const DEFAULT_FILM = {
   title: '',
   rating: '0.0',
   info: {
@@ -49,7 +51,7 @@ const createComment = (film) => {
   return commentsList;
 };
 
-const createPopupTemplate = (film = defaultFilm) => {
+const createPopupTemplate = (film) => {
   const {
     title,
     rating,
@@ -191,4 +193,29 @@ const createPopupTemplate = (film = defaultFilm) => {
   </section>`;
 };
 
-export { createPopupTemplate };
+class PopupView {
+  #element = null;
+  #film = null;
+
+  constructor(film = DEFAULT_FILM) {
+    this.#film = film;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createPopupTemplate(this.#film);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
+
+export { PopupView };
