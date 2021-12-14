@@ -23,4 +23,6 @@ const getRandomRangeFromArray = (arrayToRange, numOfElements) => {
   return arr;
 };
 
-export { getRandomNumber, getRandomFloat, getRandomRangeFromArray };
+const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
+
+export { getRandomNumber, getRandomFloat, getRandomRangeFromArray, isEscapeKey };
