@@ -1,3 +1,5 @@
+import { createElement } from '../render.js';
+
 const genreToFilterMap = {
   'Family': (films) => films.filter((film) => film.info.genre.includes('Family')).length,
   'Sci-Fi': (films) => films.filter((film) => film.info.genre.includes('Sci-Fi')).length,
@@ -119,4 +121,81 @@ const createRankTemplate = (watched) => {
   </section>`;
 };
 
-export { createFooterStatsTemplate, createStatsTemplate, createRankTemplate };
+class StatsView {
+  #element = null;
+  #films = null;
+  #watched = null;
+
+  constructor(films, watched) {
+    this.#films = films;
+    this.#watched = watched;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createStatsTemplate(this.#films, this.#watched);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
+
+class FooterStatsView {
+  #element = null;
+  #films = null;
+
+  constructor(films) {
+    this.#films = films;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createFooterStatsTemplate(this.#films);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
+
+class RankView {
+  #element = null;
+  #watched = null;
+
+  constructor(watched) {
+    this.#watched = watched;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createRankTemplate(this.#watched);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
+
+export { StatsView, FooterStatsView, RankView };

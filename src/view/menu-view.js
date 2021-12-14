@@ -1,3 +1,5 @@
+import { createElement } from '../render.js';
+
 const filtersText = {
   all: 'All movies',
   watchlist: 'Watchlist',
@@ -29,13 +31,32 @@ const createMenuTemplate = (filterItems) => {
       ${filterItemsTemplate}
     </div>
     <a href="#stats" class="main-navigation__additional">Stats</a>
-  </nav>
-
-  <ul class="sort">
-    <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
-    <li><a href="#" class="sort__button">Sort by date</a></li>
-    <li><a href="#" class="sort__button">Sort by rating</a></li>
-  </ul>`;
+  </nav>`;
 };
 
-export { createMenuTemplate };
+class MenuView {
+  #element = null;
+  #filters = null;
+
+  constructor(filters) {
+    this.#filters = filters;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createMenuTemplate(this.#filters);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
+
+export { MenuView };
