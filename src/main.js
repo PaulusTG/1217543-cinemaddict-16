@@ -21,9 +21,16 @@ const mainElement = document.querySelector('.main');
 const headerElement = document.querySelector('.header');
 const footerStatistics = document.querySelector('.footer__statistics');
 
+const menuComponent = new MenuView(filters);
+const sortComponent = new SortView();
 const boardComponent = new BoardView();
 const boardListComponent = new BoardListView();
 const filmsListComponent = new FilmListView();
+
+const filmsWatched = menuComponent.element.querySelector('#history span').textContent;
+const statsComponent = new StatsView(films, filmsWatched);
+const rankComponent = new RankView(filmsWatched);
+const footerStatsComponent = new FooterStatsView(films);
 
 const renderFilm = (filmListElement, film) => {
   const filmComponent = new FilmView(film);
@@ -52,8 +59,8 @@ const renderFilm = (filmListElement, film) => {
   render(filmListElement, filmComponent.element, RenderPosition.BEFOREEND);
 };
 
-render(mainElement, new MenuView(filters).element, RenderPosition.BEFOREEND);
-render(mainElement, new SortView().element, RenderPosition.BEFOREEND);
+render(mainElement, menuComponent.element, RenderPosition.BEFOREEND);
+render(mainElement, sortComponent.element, RenderPosition.BEFOREEND);
 
 render(mainElement, boardComponent.element, RenderPosition.BEFOREEND);
 render(boardComponent.element, boardListComponent.element, RenderPosition.BEFOREEND);
@@ -85,8 +92,7 @@ if (films.length > FILM_COUNT_PER_STEP) {
   });
 }
 
-const filmsWatched = document.querySelector('#history span').textContent;
-render(mainElement, new StatsView(films, filmsWatched).element, RenderPosition.BEFOREEND);
-render(headerElement, new RankView(filmsWatched).element, RenderPosition.BEFOREEND);
+render(mainElement, statsComponent.element, RenderPosition.BEFOREEND);
+render(headerElement, rankComponent.element, RenderPosition.BEFOREEND);
 
-render(footerStatistics, new FooterStatsView(films).element, RenderPosition.BEFOREEND);
+render(footerStatistics, footerStatsComponent.element, RenderPosition.BEFOREEND);
