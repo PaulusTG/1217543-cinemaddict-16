@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { getRandomNumber, getRandomFloat, getRandomRangeFromArray } from '../utils.js';
+import { getRandomNumber, getRandomFloat, getRandomRangeFromArray } from '../utils/common.js';
 
 const filmPosters = {
   'Made for Each Other': 'made-for-each-other.png',

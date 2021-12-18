@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import { AbstractView } from './abstract-view.js';
 
 const createDescription = (description) => {
   if (description.length > 140) {
@@ -53,28 +53,25 @@ const createFilmTemplate = (film) => {
     </article>`;
 };
 
-class FilmView {
-  #element = null;
+class FilmView extends AbstractView {
   #film = null;
 
   constructor(film) {
+    super();
     this.#film = film;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createFilmTemplate(this.#film);
   }
 
-  removeElement() {
-    this.#element = null;
+  setOnFilmClick = (callback) => {
+    this._callback.filmClick = callback;
+    this.element.querySelector('.film-card__link').addEventListener('click', this.#onFilmClick);
+  }
+
+  #onFilmClick = () => {
+    this._callback.filmClick();
   }
 }
 

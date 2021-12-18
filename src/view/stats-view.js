@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import { AbstractView } from './abstract-view.js';
 
 const genreToFilterMap = {
   'Family': (films) => films.filter((film) => film.info.genre.includes('Family')).length,
@@ -121,80 +121,44 @@ const createRankTemplate = (watched) => {
   </section>`;
 };
 
-class StatsView {
-  #element = null;
+class StatsView extends AbstractView {
   #films = null;
   #watched = null;
 
   constructor(films, watched) {
+    super();
     this.#films = films;
     this.#watched = watched;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createStatsTemplate(this.#films, this.#watched);
   }
-
-  removeElement() {
-    this.#element = null;
-  }
 }
 
-class FooterStatsView {
-  #element = null;
+class FooterStatsView extends AbstractView {
   #films = null;
 
   constructor(films) {
+    super();
     this.#films = films;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createFooterStatsTemplate(this.#films);
   }
-
-  removeElement() {
-    this.#element = null;
-  }
 }
 
-class RankView {
-  #element = null;
+class RankView extends AbstractView {
   #watched = null;
 
   constructor(watched) {
+    super();
     this.#watched = watched;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createRankTemplate(this.#watched);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
 

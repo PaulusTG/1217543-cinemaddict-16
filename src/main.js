@@ -10,8 +10,8 @@ import { PopupView } from './view/popup-view.js';
 import { StatsView, FooterStatsView, RankView } from './view/stats-view.js';
 import { generateFilmCard } from './mock/film.js';
 import { generateFilter } from './mock/filter.js';
-import { render, RenderPosition } from './render.js';
-import { isEscapeKey } from './utils.js';
+import { render, RenderPosition, remove } from './utils/render.js';
+import { isEscapeKey } from './utils/common.js';
 
 const FILM_COUNT = 21;
 const FILM_COUNT_PER_STEP = 5;
@@ -41,43 +41,47 @@ const renderFilm = (filmListElement, film) => {
   const bodyElement = document.querySelector('body');
 
   const openPopupToFilm = () => {
-    filmListElement.appendChild(filmPopupComponent.element);
+    render(filmListElement, filmPopupComponent, RenderPosition.BEFOREEND);
     bodyElement.classList.add('hide-overflow');
   };
 
-  const closePopupToFilm = (evt) => {
-    if (isEscapeKey(evt)) {
-      evt.preventDefault();
-    }
-    filmListElement.removeChild(filmPopupComponent.element);
+  const closePopupToFilm = () => {
+    remove(filmPopupComponent);
     bodyElement.classList.remove('hide-overflow');
-    document.removeEventListener('keydown', closePopupToFilm);
   };
 
-  filmComponent.element.querySelector('.film-card__link').addEventListener('click', () => {
+  const onEscKeyDown = (evt) => {
+    if (isEscapeKey(evt)) {
+      evt.preventDefault();
+      closePopupToFilm();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
+  filmComponent.setOnFilmClick(() => {
     openPopupToFilm();
-    document.addEventListener('keydown', closePopupToFilm);
+    document.addEventListener('keydown', onEscKeyDown);
   });
 
-  filmPopupComponent.element.querySelector('.film-details__close-btn').addEventListener('click', (evt) => {
-    evt.preventDefault();
-    closePopupToFilm(evt);
+  filmPopupComponent.setOnClosePopupClick(() => {
+    closePopupToFilm();
+    document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  render(filmListElement, filmComponent.element, RenderPosition.BEFOREEND);
+  render(filmListElement, filmComponent, RenderPosition.BEFOREEND);
 };
 
 const renderBoard = (boardContainer, boardFilms) => {
   if (boardFilms.length === 0) {
-    render(boardContainer, boardComponent.element, RenderPosition.BEFOREEND);
-    render(boardComponent.element, noFilmComponent.element, RenderPosition.BEFOREEND);
+    render(boardContainer, boardComponent, RenderPosition.BEFOREEND);
+    render(boardComponent, noFilmComponent, RenderPosition.BEFOREEND);
     return;
   }
 
-  render(boardContainer, sortComponent.element, RenderPosition.BEFOREEND);
-  render(boardContainer, boardComponent.element, RenderPosition.BEFOREEND);
-  render(boardComponent.element, boardListComponent.element, RenderPosition.BEFOREEND);
-  render(boardListComponent.element, filmsListComponent.element, RenderPosition.BEFOREEND);
+  render(boardContainer, sortComponent, RenderPosition.BEFOREEND);
+  render(boardContainer, boardComponent, RenderPosition.BEFOREEND);
+  render(boardComponent, boardListComponent, RenderPosition.BEFOREEND);
+  render(boardListComponent, filmsListComponent, RenderPosition.BEFOREEND);
 
   boardFilms
     .slice(0, Math.min(boardFilms.length, FILM_COUNT_PER_STEP))
@@ -88,10 +92,9 @@ const renderBoard = (boardContainer, boardFilms) => {
 
     const showMoreButtonComponent = new ShowMoreButtonView();
 
-    render(boardListComponent.element, showMoreButtonComponent.element, RenderPosition.BEFOREEND);
+    render(boardListComponent, showMoreButtonComponent, RenderPosition.BEFOREEND);
 
-    showMoreButtonComponent.element.addEventListener('click', (evt) => {
-      evt.preventDefault();
+    showMoreButtonComponent.setOnClick(() => {
       boardFilms
         .slice(renderedFilmCount, renderedFilmCount + FILM_COUNT_PER_STEP)
         .forEach((film) => renderFilm(filmsListComponent.element, film));
@@ -99,15 +102,14 @@ const renderBoard = (boardContainer, boardFilms) => {
       renderedFilmCount += FILM_COUNT_PER_STEP;
 
       if (renderedFilmCount >= boardFilms.length) {
-        showMoreButtonComponent.element.remove();
-        showMoreButtonComponent.removeElement();
+        remove(showMoreButtonComponent);
       }
     });
   }
-  render(boardContainer, statsComponent.element, RenderPosition.BEFOREEND);
+  render(boardContainer, statsComponent, RenderPosition.BEFOREEND);
 };
 
-render(mainElement, menuComponent.element, RenderPosition.BEFOREEND);
+render(mainElement, menuComponent, RenderPosition.BEFOREEND);
 renderBoard(mainElement, films);
-render(headerElement, rankComponent.element, RenderPosition.BEFOREEND);
-render(footerStatistics, footerStatsComponent.element, RenderPosition.BEFOREEND);
+render(headerElement, rankComponent, RenderPosition.BEFOREEND);
+render(footerStatistics, footerStatsComponent, RenderPosition.BEFOREEND);

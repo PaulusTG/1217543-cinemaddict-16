@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import { AbstractView } from './abstract-view.js';
 
 const DEFAULT_FILM = {
   title: '',
@@ -193,28 +193,26 @@ const createPopupTemplate = (film) => {
   </section>`;
 };
 
-class PopupView {
-  #element = null;
+class PopupView extends AbstractView {
   #film = null;
 
   constructor(film = DEFAULT_FILM) {
+    super();
     this.#film = film;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createPopupTemplate(this.#film);
   }
 
-  removeElement() {
-    this.#element = null;
+  setOnClosePopupClick = (callback) => {
+    this._callback.closePopup = callback;
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#onClosePopupClick);
+  }
+
+  #onClosePopupClick = (evt) => {
+    evt.preventDefault();
+    this._callback.closePopup();
   }
 }
 
