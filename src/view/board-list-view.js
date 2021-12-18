@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import { AbstractView } from './abstract-view.js';
 
 const createBoardListContainer = () => (
   `<section class="films-list">
@@ -7,23 +7,9 @@ const createBoardListContainer = () => (
   </section>`
 );
 
-class BoardListView {
-  #element = null;
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
+class BoardListView extends AbstractView {
   get template() {
     return createBoardListContainer();
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
 
