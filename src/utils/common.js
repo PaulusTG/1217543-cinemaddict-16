@@ -25,4 +25,17 @@ const getRandomRangeFromArray = (arrayToRange, numOfElements) => {
 
 const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
-export { getRandomNumber, getRandomFloat, getRandomRangeFromArray, isEscapeKey };
+const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1),
+  ];
+};
+
+export { getRandomNumber, getRandomFloat, getRandomRangeFromArray, isEscapeKey, updateItem };
