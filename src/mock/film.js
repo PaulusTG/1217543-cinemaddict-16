@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 import { getRandomNumber, getRandomFloat, getRandomRangeFromArray } from '../utils/common.js';
 
 const filmPosters = {
@@ -117,6 +118,8 @@ const generateDuration = () => {
 };
 
 const generateFilmCard = () => {
+  const id = nanoid();
+
   const title = generateTitle();
   const rating = getRandomFloat(0, 10, 1);
 
@@ -142,6 +145,7 @@ const generateFilmCard = () => {
   const isFavorite = Boolean(getRandomNumber(0, 1));
 
   return {
+    id,
     title,
     rating,
     info: {
