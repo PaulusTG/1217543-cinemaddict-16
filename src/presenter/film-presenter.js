@@ -13,7 +13,7 @@ const bodyElement = document.querySelector('body');
 class FilmPresenter {
   #filmListContainer = null;
   #changeData = null;
-  #changeMode = null;
+  #resetMode = null;
 
   #filmComponent = null;
   #filmPopupComponent = null;
@@ -21,10 +21,10 @@ class FilmPresenter {
   #film = null;
   #mode = Mode.DEFAULT;
 
-  constructor(filmListContainer, changeData, changeMode) {
+  constructor(filmListContainer, changeData, resetMode) {
     this.#filmListContainer = filmListContainer;
     this.#changeData = changeData;
-    this.#changeMode = changeMode;
+    this.#resetMode = resetMode;
   }
 
   init = (film) => {
@@ -78,7 +78,7 @@ class FilmPresenter {
   }
 
   #openPopupToFilm = () => {
-    this.#changeMode();
+    this.#resetMode();
     render(this.#filmListContainer, this.#filmPopupComponent, RenderPosition.BEFOREEND);
     bodyElement.classList.add('hide-overflow');
     this.#mode = Mode.POPUP;
@@ -88,7 +88,7 @@ class FilmPresenter {
     this.#filmPopupComponent.element.remove();
     bodyElement.classList.remove('hide-overflow');
     this.#mode = Mode.DEFAULT;
-    this.#changeMode();
+    this.#resetMode();
   };
 
   #onEscKeyDown = (evt) => {

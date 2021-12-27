@@ -34,7 +34,7 @@ class BoardPresenter {
     this.#renderBoard();
   }
 
-  #onModeChange = () => {
+  #onModeReset = () => {
     this.#filmPresenter.forEach((presenter) => presenter.resetView());
   }
 
@@ -63,7 +63,7 @@ class BoardPresenter {
   }
 
   #renderFilm = (film) => {
-    const filmPresenter = new FilmPresenter(this.#filmsListComponent, this.#onFilmChange, this.#onModeChange);
+    const filmPresenter = new FilmPresenter(this.#filmsListComponent, this.#onFilmChange, this.#onModeReset);
     filmPresenter.init(film);
     this.#filmPresenter.set(film.id, filmPresenter);
   }
