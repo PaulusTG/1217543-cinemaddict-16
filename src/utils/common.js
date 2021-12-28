@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 const getRandomNumber = (min = 0, max = 1) => {
   min = Math.ceil(Math.min(min, max));
   max = Math.floor(Math.max(min, max));
@@ -38,4 +40,8 @@ const updateItem = (items, update) => {
   ];
 };
 
-export { getRandomNumber, getRandomFloat, getRandomRangeFromArray, isEscapeKey, updateItem };
+const sortFilmByDate = (filmA, filmB) => dayjs(filmB.info.date).diff(dayjs(filmA.info.date));
+
+const sortFilmByRating = (filmA, filmB) => filmB.rating - filmA.rating;
+
+export { getRandomNumber, getRandomFloat, getRandomRangeFromArray, isEscapeKey, updateItem, sortFilmByDate, sortFilmByRating };
