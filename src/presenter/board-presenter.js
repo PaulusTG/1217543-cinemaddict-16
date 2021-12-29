@@ -1,12 +1,12 @@
 import { BoardView } from '../view/board-view.js';
 import { BoardListView } from '../view/board-list-view.js';
-import { SortView } from '../view/sort-view.js';
+import { SortView, SortType } from '../view/sort-view.js';
 import { FilmListView } from '../view/film-list-view.js';
 import { NoFilmView } from '../view/no-film-view.js';
 import { ShowMoreButtonView } from '../view/btn-show-more-view';
 import { FilmPresenter } from './film-presenter.js';
 import { render, RenderPosition, remove } from '../utils/render.js';
-import { updateItem } from '../utils/common.js';
+import { sortFilmByDate, sortFilmByRating, updateItem } from '../utils/common.js';
 
 const FILM_COUNT_PER_STEP = 5;
 
@@ -23,6 +23,8 @@ class BoardPresenter {
   #boardFilms = [];
   #renderedFilmCount = FILM_COUNT_PER_STEP;
   #filmPresenter = new Map();
+  #currentSortType = SortType.DEFAULT;
+  #sourcedBoardFilms = [];
 
   constructor(boardContainer) {
     this.#boardContainer = boardContainer;
@@ -30,6 +32,7 @@ class BoardPresenter {
 
   init = (boardFilms) => {
     this.#boardFilms = [...boardFilms];
+    this.#sourcedBoardFilms = [...boardFilms];
 
     this.#renderBoard();
   }
@@ -40,11 +43,38 @@ class BoardPresenter {
 
   #onFilmChange = (updatedFilm) => {
     this.#boardFilms = updateItem(this.#boardFilms, updatedFilm);
+    this.#sourcedBoardFilms = updateItem(this.#sourcedBoardFilms, updatedFilm);
     this.#filmPresenter.get(updatedFilm.id).init(updatedFilm);
+  }
+
+  #sortFilms = (sortType) => {
+    switch (sortType) {
+      case SortType.BY_DATE:
+        this.#boardFilms.sort(sortFilmByDate);
+        break;
+      case SortType.BY_RATING:
+        this.#boardFilms.sort(sortFilmByRating);
+        break;
+      default:
+        this.#boardFilms = [...this.#sourcedBoardFilms];
+    }
+
+    this.#currentSortType = sortType;
+  }
+
+  #onSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortFilms(sortType);
+    this.#clearFilmList();
+    this.#renderFilmsList();
   }
 
   #renderSort = () => {
     render(this.#boardContainer, this.#sortComponent, RenderPosition.BEFOREEND);
+    this.#sortComponent.setOnSortTypeChange(this.#onSortTypeChange);
   }
 
   #renderBoardList = () => {
