@@ -20,6 +20,7 @@ class FilmPresenter {
 
   #film = null;
   #mode = Mode.DEFAULT;
+  #scrollPosY = 0;
 
   constructor(filmListContainer, changeData, resetMode) {
     this.#filmListContainer = filmListContainer;
@@ -111,15 +112,27 @@ class FilmPresenter {
   }
 
   #onAddToWatchlistClick = () => {
+    this.#scrollPosY = this.#filmPopupComponent.element.scrollTop;
+
     this.#changeData({ ...this.#film, isAddedToWatchlist: !this.#film.isAddedToWatchlist });
+
+    this.#filmPopupComponent.element.scrollTo(0, this.#scrollPosY);
   }
 
   #onWatchedClick = () => {
+    this.#scrollPosY = this.#filmPopupComponent.element.scrollTop;
+
     this.#changeData({ ...this.#film, isWatched: !this.#film.isWatched });
+
+    this.#filmPopupComponent.element.scrollTo(0, this.#scrollPosY);
   }
 
   #onFavoriteClick = () => {
+    this.#scrollPosY = this.#filmPopupComponent.element.scrollTop;
+
     this.#changeData({ ...this.#film, isFavorite: !this.#film.isFavorite });
+
+    this.#filmPopupComponent.element.scrollTo(0, this.#scrollPosY);
   }
 }
 
