@@ -36,4 +36,4 @@ class SortView extends AbstractView {
   }
 }
 
-export { SortView, SORT_TYPE as SortType };
+export { SortView };
