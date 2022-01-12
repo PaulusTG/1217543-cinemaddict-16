@@ -12,6 +12,8 @@ const filmPosters = {
   'The Man with the Golden Arm': 'the-man-with-the-golden-arm.jpg',
 };
 
+const EMOJIES = ['smile', 'sleeping', 'puke', 'angry'];
+
 const generateTitle = () => {
   const titles = ['Made for Each Other', 'Popeye the Sailor meets Sindbad the Sailor',
     'Sagebrush trail', 'Santa Claus conquers the Martians', 'The Dance of Life',
@@ -57,12 +59,11 @@ const generateCountry = () => {
 };
 
 const generateEmoji = (count) => {
-  const emojies = ['smile', 'sleeping', 'puke', 'angry'];
   const emojiesList = [];
 
   for (let i = 0; i < count; i++) {
-    const randomIndex = getRandomNumber(0, emojies.length - 1);
-    emojiesList.push(emojies[randomIndex]);
+    const randomIndex = getRandomNumber(0, EMOJIES.length - 1);
+    emojiesList.push(EMOJIES[randomIndex]);
   }
 
   return emojiesList;
@@ -172,4 +173,4 @@ const generateFilmCard = () => {
   };
 };
 
-export { generateFilmCard };
+export { generateFilmCard, EMOJIES };
