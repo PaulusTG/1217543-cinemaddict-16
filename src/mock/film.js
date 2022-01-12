@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { getRandomNumber, getRandomFloat, getRandomRangeFromArray } from '../utils/common.js';
+import { EMOJIES } from '../utils/const.js';
 
 const filmPosters = {
   'Made for Each Other': 'made-for-each-other.png',
@@ -11,8 +12,6 @@ const filmPosters = {
   'The Great Flamarion': 'the-great-flamarion.jpg',
   'The Man with the Golden Arm': 'the-man-with-the-golden-arm.jpg',
 };
-
-const EMOJIES = ['smile', 'sleeping', 'puke', 'angry'];
 
 const generateTitle = () => {
   const titles = ['Made for Each Other', 'Popeye the Sailor meets Sindbad the Sailor',
