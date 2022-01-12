@@ -1,5 +1,5 @@
 import { SmartView } from './smart-view.js';
-import { EMOJIES } from '../mock/film.js';
+import { EMOJIES } from '../utils/const.js';
 
 const DEFAULT_FILM = {
   title: '',

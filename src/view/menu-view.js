@@ -1,11 +1,5 @@
 import { AbstractView } from './abstract-view.js';
-
-const filtersText = {
-  all: 'All movies',
-  watchlist: 'Watchlist',
-  history: 'History',
-  favorites: 'Favorites',
-};
+import { FILTERS_TEXT } from '../utils/const.js';
 
 const createMenuItemTemplate = (filter, isActive) => {
   const { name, count } = filter;
@@ -18,7 +12,7 @@ const createMenuItemTemplate = (filter, isActive) => {
     ? `<span class="main-navigation__item-count">${count}</span>`
     : '';
 
-  return `<a href="#${name}" id=${name} class="main-navigation__item ${activeClassName}">${filtersText[name]} ${countSpan}</a>`;
+  return `<a href="#${name}" id=${name} class="main-navigation__item ${activeClassName}">${FILTERS_TEXT[name]} ${countSpan}</a>`;
 };
 
 const createMenuTemplate = (filterItems) => {

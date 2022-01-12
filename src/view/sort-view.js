@@ -1,15 +1,10 @@
 import { AbstractView } from './abstract-view.js';
-
-const SortType = {
-  DEFAULT: 'default',
-  BY_DATE: 'date',
-  BY_RATING: 'rating',
-};
+import { SORT_TYPE } from '../utils/const.js';
 
 const createSortTemplate = () => (`<ul class="sort">
-    <li><a href="#" class="sort__button sort__button--active" data-sort-type="${SortType.DEFAULT}">Sort by default</a></li>
-    <li><a href="#" class="sort__button" data-sort-type="${SortType.BY_DATE}">Sort by date</a></li>
-    <li><a href="#" class="sort__button" data-sort-type="${SortType.BY_RATING}">Sort by rating</a></li>
+    <li><a href="#" class="sort__button sort__button--active" data-sort-type="${SORT_TYPE.DEFAULT}">Sort by default</a></li>
+    <li><a href="#" class="sort__button" data-sort-type="${SORT_TYPE.BY_DATE}">Sort by date</a></li>
+    <li><a href="#" class="sort__button" data-sort-type="${SORT_TYPE.BY_RATING}">Sort by rating</a></li>
   </ul>`
 );
 
@@ -41,4 +36,4 @@ class SortView extends AbstractView {
   }
 }
 
-export { SortView, SortType };
+export { SortView };

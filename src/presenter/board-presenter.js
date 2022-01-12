@@ -1,6 +1,7 @@
 import { BoardView } from '../view/board-view.js';
 import { BoardListView } from '../view/board-list-view.js';
-import { SortView, SortType } from '../view/sort-view.js';
+import { SortView } from '../view/sort-view.js';
+import { SORT_TYPE } from '../utils/const.js';
 import { FilmListView } from '../view/film-list-view.js';
 import { NoFilmView } from '../view/no-film-view.js';
 import { ShowMoreButtonView } from '../view/btn-show-more-view';
@@ -23,7 +24,7 @@ class BoardPresenter {
   #boardFilms = [];
   #renderedFilmCount = FILM_COUNT_PER_STEP;
   #filmPresenter = new Map();
-  #currentSortType = SortType.DEFAULT;
+  #currentSortType = SORT_TYPE.DEFAULT;
   #sourcedBoardFilms = [];
 
   constructor(boardContainer) {
@@ -49,10 +50,10 @@ class BoardPresenter {
 
   #sortFilms = (sortType) => {
     switch (sortType) {
-      case SortType.BY_DATE:
+      case SORT_TYPE.BY_DATE:
         this.#boardFilms.sort(sortFilmByDate);
         break;
-      case SortType.BY_RATING:
+      case SORT_TYPE.BY_RATING:
         this.#boardFilms.sort(sortFilmByRating);
         break;
       default:
