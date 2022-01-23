@@ -51,15 +51,19 @@ const getRank = (watched) => {
   return rank;
 };
 
-const createStatsTemplate = (films, watched) => {
+const getWatchedFilms = (films) => films.filter((film) => film.isWatched).length;
+
+const createStatsTemplate = (films) => {
 
   const topGenres = getTopGenre(films).sort((a, b) => b.count - a.count);
 
-  const rankElement = Number(watched) !== 0
+  const watchedFilms = getWatchedFilms(films);
+
+  const rankElement = watchedFilms !== 0
     ? `<p class="statistic__rank">
         Your rank
         <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-        <span class="statistic__rank-label">${getRank(watched)}</span>
+        <span class="statistic__rank-label">${getRank(watchedFilms)}</span>
       </p>`
     : '';
 
@@ -88,7 +92,7 @@ const createStatsTemplate = (films, watched) => {
     <ul class="statistic__text-list">
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">You watched</h4>
-        <p class="statistic__item-text">${watched} <span class="statistic__item-description">movies</span></p>
+        <p class="statistic__item-text">${watchedFilms} <span class="statistic__item-description">movies</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
@@ -110,9 +114,11 @@ const createStatsTemplate = (films, watched) => {
   </section>`;
 };
 
-const createRankTemplate = (watched) => {
-  const rankElement = Number(watched) !== 0
-    ? `<p class="profile__rating">${getRank(watched)}</p>`
+const createRankTemplate = (films) => {
+  const watchedFilms = getWatchedFilms(films);
+
+  const rankElement = watchedFilms !== 0
+    ? `<p class="profile__rating">${getRank(watchedFilms)}</p>`
     : '';
 
   return `<section class="header__profile profile">
@@ -123,16 +129,14 @@ const createRankTemplate = (watched) => {
 
 class StatsView extends AbstractView {
   #films = null;
-  #watched = null;
 
-  constructor(films, watched) {
+  constructor(films) {
     super();
     this.#films = films;
-    this.#watched = watched;
   }
 
   get template() {
-    return createStatsTemplate(this.#films, this.#watched);
+    return createStatsTemplate(this.#films);
   }
 }
 
@@ -150,15 +154,15 @@ class FooterStatsView extends AbstractView {
 }
 
 class RankView extends AbstractView {
-  #watched = null;
+  #films = null;
 
-  constructor(watched) {
+  constructor(films) {
     super();
-    this.#watched = watched;
+    this.#films = films;
   }
 
   get template() {
-    return createRankTemplate(this.#watched);
+    return createRankTemplate(this.#films);
   }
 }
 

@@ -1,138 +1,75 @@
 import { FilmView } from '../view/film-view.js';
-import { PopupView } from '../view/popup-view.js';
 import { render, RenderPosition, remove, replace } from '../utils/render.js';
-import { isEscapeKey } from '../utils/common.js';
-
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  POPUP: 'POPUP',
-};
-
-const bodyElement = document.querySelector('body');
+import { USER_ACTION, UPDATE_TYPE } from '../utils/const.js';
 
 class FilmPresenter {
   #filmListContainer = null;
   #changeData = null;
-  #resetMode = null;
 
   #filmComponent = null;
-  #filmPopupComponent = null;
+  #openPopup = null;
 
   #film = null;
-  #mode = Mode.DEFAULT;
-  #scrollPosY = 0;
 
-  constructor(filmListContainer, changeData, resetMode) {
+  constructor(filmListContainer, changeData, openPopup) {
     this.#filmListContainer = filmListContainer;
     this.#changeData = changeData;
-    this.#resetMode = resetMode;
+    this.#openPopup = openPopup;
   }
 
   init = (film) => {
     this.#film = film;
 
     const prevFilmComponent = this.#filmComponent;
-    const prevFilmPopupComponent = this.#filmPopupComponent;
 
     this.#filmComponent = new FilmView(film);
-    this.#filmPopupComponent = new PopupView(film);
 
     this.#filmComponent.setOnFilmClick(this.#onFilmClick);
     this.#filmComponent.setOnAddToWatchlistClick(this.#onAddToWatchlistClick);
     this.#filmComponent.setOnWatchedClick(this.#onWatchedClick);
     this.#filmComponent.setOnFavoriteClick(this.#onFavoriteClick);
 
-    this.#filmPopupComponent.setOnClosePopupClick(this.#onClosePopupClick);
-    this.#filmPopupComponent.setOnAddToWatchlistClick(this.#onAddToWatchlistClick);
-    this.#filmPopupComponent.setOnWatchedClick(this.#onWatchedClick);
-    this.#filmPopupComponent.setOnFavoriteClick(this.#onFavoriteClick);
-
-    if (prevFilmComponent === null || prevFilmPopupComponent === null) {
+    if (prevFilmComponent === null) {
       render(this.#filmListContainer, this.#filmComponent, RenderPosition.BEFOREEND);
       return;
     }
 
-    if (this.#mode === Mode.DEFAULT) {
-      replace(this.#filmComponent, prevFilmComponent);
-      return;
-    }
-
-    if (this.#mode === Mode.POPUP) {
-      replace(this.#filmComponent, prevFilmComponent);
-      replace(this.#filmPopupComponent, prevFilmPopupComponent);
-      return;
-    }
+    replace(this.#filmComponent, prevFilmComponent);
 
     remove(prevFilmComponent);
-    remove(prevFilmPopupComponent);
   }
 
   destroy = () => {
     remove(this.#filmComponent);
-    remove(this.#filmPopupComponent);
-  }
-
-  resetView = () => {
-    if (this.#mode !== Mode.DEFAULT) {
-      this.#closePopupToFilm();
-    }
   }
 
   #openPopupToFilm = () => {
-    this.#resetMode();
-    render(this.#filmListContainer, this.#filmPopupComponent, RenderPosition.BEFOREEND);
-    bodyElement.classList.add('hide-overflow');
-    this.#mode = Mode.POPUP;
-  };
-
-  #closePopupToFilm = () => {
-    this.#filmPopupComponent.element.remove();
-    bodyElement.classList.remove('hide-overflow');
-    this.#mode = Mode.DEFAULT;
-    this.#resetMode();
-  };
-
-  #onEscKeyDown = (evt) => {
-    if (isEscapeKey(evt)) {
-      evt.preventDefault();
-      this.#closePopupToFilm();
-      document.removeEventListener('keydown', this.#onEscKeyDown);
-    }
+    this.#openPopup();
   };
 
   #onFilmClick = () => {
     this.#openPopupToFilm();
-    document.addEventListener('keydown', this.#onEscKeyDown);
-  }
-
-  #onClosePopupClick = (film) => {
-    this.#changeData(film);
-    this.#closePopupToFilm();
-    document.removeEventListener('keydown', this.#onEscKeyDown);
   }
 
   #onAddToWatchlistClick = () => {
-    this.#scrollPosY = this.#filmPopupComponent.element.scrollTop;
-
-    this.#changeData({ ...this.#film, isAddedToWatchlist: !this.#film.isAddedToWatchlist });
-
-    this.#filmPopupComponent.element.scrollTo(0, this.#scrollPosY);
+    this.#changeData(
+      USER_ACTION.UPDATE_FILM,
+      UPDATE_TYPE.MINOR,
+      { ...this.#film, isAddedToWatchlist: !this.#film.isAddedToWatchlist });
   }
 
   #onWatchedClick = () => {
-    this.#scrollPosY = this.#filmPopupComponent.element.scrollTop;
-
-    this.#changeData({ ...this.#film, isWatched: !this.#film.isWatched });
-
-    this.#filmPopupComponent.element.scrollTo(0, this.#scrollPosY);
+    this.#changeData(
+      USER_ACTION.UPDATE_FILM,
+      UPDATE_TYPE.MINOR,
+      { ...this.#film, isWatched: !this.#film.isWatched });
   }
 
   #onFavoriteClick = () => {
-    this.#scrollPosY = this.#filmPopupComponent.element.scrollTop;
-
-    this.#changeData({ ...this.#film, isFavorite: !this.#film.isFavorite });
-
-    this.#filmPopupComponent.element.scrollTo(0, this.#scrollPosY);
+    this.#changeData(
+      USER_ACTION.UPDATE_FILM,
+      UPDATE_TYPE.MINOR,
+      { ...this.#film, isFavorite: !this.#film.isFavorite });
   }
 }
 

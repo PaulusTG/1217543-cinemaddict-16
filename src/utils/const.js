@@ -1,8 +1,8 @@
-const FILTERS_TEXT = {
-  all: 'All movies',
-  watchlist: 'Watchlist',
-  history: 'History',
-  favorites: 'Favorites',
+const FILTERS_TYPE = {
+  ALL: 'all',
+  WATCHLIST: 'watchlist',
+  HISTORY: 'history',
+  FAVORITES: 'favorites',
 };
 
 const SORT_TYPE = {
@@ -13,4 +13,16 @@ const SORT_TYPE = {
 
 const EMOJIES = ['smile', 'sleeping', 'puke', 'angry'];
 
-export { FILTERS_TEXT, SORT_TYPE, EMOJIES };
+const USER_ACTION = {
+  UPDATE_FILM: 'UPDATE_FILM',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+  ADD_COMMENT: 'ADD_COMMENT',
+};
+
+const UPDATE_TYPE = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export { FILTERS_TYPE, SORT_TYPE, EMOJIES, USER_ACTION, UPDATE_TYPE };

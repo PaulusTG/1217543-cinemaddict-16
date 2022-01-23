@@ -1,5 +1,4 @@
 import { SmartView } from './smart-view.js';
-import { EMOJIES } from '../utils/const.js';
 
 const DEFAULT_FILM = {
   title: '',
@@ -15,51 +14,11 @@ const DEFAULT_FILM = {
   },
   poster: '',
   description: '',
-  comments: {
-    count: 0,
-    emoji: '',
-    text: '',
-    author: '',
-    datetime: '',
-  },
+  comments: [],
   isAddedToWatchlist: false,
   isWatched: false,
   isFavorite: false,
 };
-
-const createCommentTemplate = (emoji, text, author, datetime) => (
-  `<li class="film-details__comment">
-    <span class="film-details__comment-emoji">
-      <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
-    </span>
-    <div>
-      <p class="film-details__comment-text">${text}</p>
-      <p class="film-details__comment-info">
-        <span class="film-details__comment-author">${author}</span>
-        <span class="film-details__comment-day">${datetime}</span>
-        <button class="film-details__comment-delete">Delete</button>
-      </p>
-    </div>
-  </li>`);
-
-const createComments = (film) => {
-  const { comments } = film;
-  const commentsList = [];
-
-  for (let i = 0; i < comments.count; i++) {
-    commentsList.push(createCommentTemplate(comments.emoji[i], comments.text[i], comments.author[i], comments.datetime[i]));
-  }
-
-  return commentsList;
-};
-
-const createEmojiListTemplate = () => (
-  EMOJIES.map((emoji) => `
-  <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
-  <label class="film-details__emoji-label" for="emoji-${emoji}">
-    <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
-  </label>`).join('')
-);
 
 const createPopupTemplate = (film) => {
   const {
@@ -68,12 +27,9 @@ const createPopupTemplate = (film) => {
     info,
     poster,
     description,
-    comments,
     isAddedToWatchlist,
     isWatched,
     isFavorite,
-    isEmojiChoosen,
-    newCommentEmoji,
   } = film;
 
   const watchlistClassName = isAddedToWatchlist
@@ -86,13 +42,6 @@ const createPopupTemplate = (film) => {
 
   const favoriteClassName = isFavorite
     ? 'film-details__control-button--active'
-    : '';
-
-  const commentsList = createComments(film).join('');
-  const emojiList = createEmojiListTemplate();
-
-  const choosenEmoji = isEmojiChoosen
-    ? `<img src="./images/emoji/${newCommentEmoji}.png" width="70" height="70" alt="emoji">`
     : '';
 
   return `<section class="film-details">
@@ -168,25 +117,6 @@ const createPopupTemplate = (film) => {
       </div>
 
       <div class="film-details__bottom-container">
-        <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.count}</span></h3>
-
-          <ul class="film-details__comments-list">
-            ${commentsList}
-          </ul>
-
-          <div class="film-details__new-comment">
-            <div class="film-details__add-emoji-label">${choosenEmoji}</div>
-
-            <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-            </label>
-
-            <div class="film-details__emoji-list">
-              ${emojiList}
-            </div>
-          </div>
-        </section>
       </div>
     </form>
   </section>`;
@@ -194,14 +124,9 @@ const createPopupTemplate = (film) => {
 
 class PopupView extends SmartView {
 
-  #emojiItems = null;
-  #scrollPosY = 0;
-
   constructor(film = DEFAULT_FILM) {
     super();
     this._data = PopupView.parseFilmToData(film);
-
-    this.#setInnerHandlers();
   }
 
   get template() {
@@ -209,12 +134,11 @@ class PopupView extends SmartView {
   }
 
   restoreHandlers = () => {
-    this.#setInnerHandlers();
     this.setOnClosePopupClick();
     this.setOnAddToWatchlistClick();
     this.setOnFavoriteClick();
     this.setOnWatchedClick();
-    this.setOnEnterKeydown();
+    this.setOnPopupScroll();
   }
 
   reset = (film) => {
@@ -223,12 +147,16 @@ class PopupView extends SmartView {
     );
   }
 
-  #setInnerHandlers = () => {
-    this.#emojiItems = this.element.querySelectorAll('.film-details__emoji-item');
-    this.#emojiItems
-      .forEach((item) => item.addEventListener('click', this.#onChooseEmoji));
-    this.element.querySelector('.film-details__comment-input')
-      .addEventListener('input', this.#onNewCommentInput);
+  setOnPopupScroll = (callback) => {
+    if (callback) {
+      this._callback.scrollPopup = callback;
+    }
+    this.element.addEventListener('scroll', this.#onPopupScroll);
+  }
+
+  #onPopupScroll = (evt) => {
+    evt.preventDefault();
+    this._callback.scrollPopup();
   }
 
   setOnClosePopupClick = (callback) => {
@@ -259,45 +187,6 @@ class PopupView extends SmartView {
     this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#onFavoriteClick);
   }
 
-  setOnEnterKeydown = (callback) => {
-    if (callback) {
-      this._callback.enterKeydown = callback;
-    }
-    document.addEventListener('keydown', this.#onEnterKeydown);
-  }
-
-  #onNewCommentInput = (evt) => {
-    evt.preventDefault();
-    this.updateData({
-      //text: evt.target.value,
-    }, true);
-  }
-
-  #onEnterKeydown = (evt) => {
-    evt.preventDefault();
-    this._callback.enterKeydown(this.parseDataToFilm(this._data));
-  }
-
-  #onChooseEmoji = (evt) => {
-    evt.preventDefault();
-    this.#scrollPosY = this.element.scrollTop;
-
-    this.updateData({
-      isEmojiChoosen: evt.target.checked,
-      newCommentEmoji: evt.target.value,
-    });
-
-    this.#emojiItems.forEach((item) => {
-      if (item.value === evt.target.value) {
-        item.checked = true;
-      } else {
-        item.checked = false;
-      }
-    });
-
-    this.element.scrollTo(0, this.#scrollPosY);
-  }
-
   #onClosePopupClick = (evt) => {
     evt.preventDefault();
     this._callback.closePopup(this._data);
@@ -320,7 +209,6 @@ class PopupView extends SmartView {
 
   static parseFilmToData = (film) => ({
     ...film,
-
   });
 
   static parseDataToFilm = (data) => {

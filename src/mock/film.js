@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { getRandomNumber, getRandomFloat, getRandomRangeFromArray } from '../utils/common.js';
-import { EMOJIES } from '../utils/const.js';
 
 const filmPosters = {
   'Made for Each Other': 'made-for-each-other.png',
@@ -57,46 +56,6 @@ const generateCountry = () => {
   return countries[randomIndex];
 };
 
-const generateEmoji = (count) => {
-  const emojiesList = [];
-
-  for (let i = 0; i < count; i++) {
-    const randomIndex = getRandomNumber(0, EMOJIES.length - 1);
-    emojiesList.push(EMOJIES[randomIndex]);
-  }
-
-  return emojiesList;
-};
-
-const generateCommentText = (count) => {
-  const texts = ['Interesting setting and a good cast', 'Booooooooooring', 'Very very old. Meh', 'Almost two hours? Seriously?', 'WOW! It`s cool!'];
-
-  return getRandomRangeFromArray(texts, count);
-};
-
-const generateCommentAuthor = (count) => {
-  const authors = ['Tim Macoveev', 'John Doe', 'Peter Fisk', 'Emma Kim', 'Gary Stopman', 'Anna Musk', 'Lisa Dover'];
-  const authorsList = [];
-
-  for (let i = 0; i < count; i++) {
-    const randomIndex = getRandomNumber(0, authors.length - 1);
-    authorsList.push(authors[randomIndex]);
-  }
-
-  return authorsList;
-};
-
-const generateCommentDatetime = (count) => {
-  const datetimesList = [];
-
-  for (let i = 0; i < count; i++) {
-    datetimesList.push(dayjs().month(getRandomNumber(0, 11)).date(getRandomNumber(1, 31)).year(getRandomNumber(2005, 2021))
-      .hour(getRandomNumber(0, 23)).minute(getRandomNumber(0, 59)).format('YYYY/M/D H:m'));
-  }
-
-  return datetimesList;
-};
-
 const generateDescription = () => {
   const descriptions = ['Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     'Cras aliquet varius magna, non porta ligula feugiat eget.', 'Fusce tristique felis at fermentum pharetra.',
@@ -117,6 +76,8 @@ const generateDuration = () => {
   return dayjs().hour(hours).minute(minutes);
 };
 
+const generateCommentsId = () => Array.from({ length: getRandomNumber(0, 5) }, nanoid);
+
 const generateFilmCard = () => {
   const id = nanoid();
 
@@ -134,11 +95,7 @@ const generateFilmCard = () => {
   const poster = filmPosters[title];
   const description = generateDescription();
 
-  const count = getRandomNumber(0, 5);
-  const emoji = generateEmoji(count);
-  const text = generateCommentText(count);
-  const author = generateCommentAuthor(count);
-  const datetime = generateCommentDatetime(count);
+  const comments = generateCommentsId();
 
   const isAddedToWatchlist = Boolean(getRandomNumber(0, 1));
   const isWatched = Boolean(getRandomNumber(0, 1));
@@ -159,17 +116,11 @@ const generateFilmCard = () => {
     },
     poster,
     description,
-    comments: {
-      count,
-      emoji,
-      text,
-      author,
-      datetime,
-    },
+    comments,
     isAddedToWatchlist,
     isWatched,
     isFavorite,
   };
 };
 
-export { generateFilmCard, EMOJIES };
+export { generateFilmCard };
