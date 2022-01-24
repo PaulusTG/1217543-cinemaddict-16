@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-// import { nanoid } from 'nanoid';
 import { getRandomNumber } from '../utils/common.js';
 import { EMOJIES } from '../utils/const.js';
 
@@ -32,7 +31,6 @@ const generateCommentDatetime = () => {
 };
 
 const generateFilmComment = (id) => {
-  // const id = nanoid();
   const emoji = generateEmoji();
   const text = generateCommentText();
   const author = generateCommentAuthor();
