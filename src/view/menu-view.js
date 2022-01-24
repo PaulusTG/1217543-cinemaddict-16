@@ -1,23 +1,22 @@
 import { AbstractView } from './abstract-view.js';
-import { FILTERS_TEXT } from '../utils/const.js';
 
-const createMenuItemTemplate = (filter, isActive) => {
-  const { name, count } = filter;
+const createMenuItemTemplate = (filter, currentFilterType) => {
+  const { type, name, count } = filter;
 
-  const activeClassName = isActive
+  const activeClassName = type === currentFilterType
     ? 'main-navigation__item--active'
     : '';
 
-  const countSpan = name !== 'all'
+  const countSpan = type !== 'all'
     ? `<span class="main-navigation__item-count">${count}</span>`
     : '';
 
-  return `<a href="#${name}" id=${name} class="main-navigation__item ${activeClassName}">${FILTERS_TEXT[name]} ${countSpan}</a>`;
+  return `<a href="#${type}" id=${type} class="main-navigation__item ${activeClassName}">${name} ${countSpan}</a>`;
 };
 
-const createMenuTemplate = (filterItems) => {
+const createMenuTemplate = (filterItems, currentFilterType) => {
   const filterItemsTemplate = filterItems
-    .map((filter, index) => createMenuItemTemplate(filter, index === 0))
+    .map((filter) => createMenuItemTemplate(filter, currentFilterType))
     .join('');
 
   return `<nav class="main-navigation">
@@ -30,14 +29,26 @@ const createMenuTemplate = (filterItems) => {
 
 class MenuView extends AbstractView {
   #filters = null;
+  #currentFilter = null;
 
-  constructor(filters) {
+  constructor(filters, currentFilterType) {
     super();
     this.#filters = filters;
+    this.#currentFilter = currentFilterType;
   }
 
   get template() {
-    return createMenuTemplate(this.#filters);
+    return createMenuTemplate(this.#filters, this.#currentFilter);
+  }
+
+  setOnFilterTypeClick = (callback) => {
+    this._callback.filterTypeClick = callback;
+    this.element.addEventListener('click', this.#onFilterTypeClick);
+  }
+
+  #onFilterTypeClick = (evt) => {
+    evt.preventDefault();
+    this._callback.filterTypeClick(evt.target.id);
   }
 }
 

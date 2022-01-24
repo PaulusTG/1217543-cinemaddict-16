@@ -27,21 +27,10 @@ const getRandomRangeFromArray = (arrayToRange, numOfElements) => {
 
 const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
-const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
-};
+const isCtrlPlusEnterKey = (evt) => evt.ctrlKey && evt.key === 'Enter';
 
 const sortFilmByDate = (filmA, filmB) => dayjs(filmB.info.date).diff(dayjs(filmA.info.date));
 
 const sortFilmByRating = (filmA, filmB) => filmB.rating - filmA.rating;
 
-export { getRandomNumber, getRandomFloat, getRandomRangeFromArray, isEscapeKey, updateItem, sortFilmByDate, sortFilmByRating };
+export { getRandomNumber, getRandomFloat, getRandomRangeFromArray, isEscapeKey, isCtrlPlusEnterKey, sortFilmByDate, sortFilmByRating };
