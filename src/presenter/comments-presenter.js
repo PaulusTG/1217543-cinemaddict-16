@@ -1,8 +1,8 @@
 import { UPDATE_TYPE, USER_ACTION } from '../utils/const.js';
 import { remove, render, RenderPosition } from '../utils/render.js';
-import { CommentsView } from '../view/comments-view.js';
+import CommentsView from '../view/comments-view.js';
 
-class CommentsPresenter {
+export default class CommentsPresenter {
   #commentsContainer = null;
   #commentsComponent = null;
   #changeData = null;
@@ -45,5 +45,3 @@ class CommentsPresenter {
       { newComment, filmId: this.#filmId });
   }
 }
-
-export { CommentsPresenter };

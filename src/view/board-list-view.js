@@ -1,4 +1,4 @@
-import { AbstractView } from './abstract-view.js';
+import AbstractView from './abstract-view.js';
 
 const createBoardListContainer = () => (
   `<section class="films-list">
@@ -7,10 +7,8 @@ const createBoardListContainer = () => (
   </section>`
 );
 
-class BoardListView extends AbstractView {
+export default class BoardListView extends AbstractView {
   get template() {
     return createBoardListContainer();
   }
 }
-
-export { BoardListView };

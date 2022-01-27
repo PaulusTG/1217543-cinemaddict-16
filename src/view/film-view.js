@@ -1,4 +1,4 @@
-import { AbstractView } from './abstract-view.js';
+import AbstractView from './abstract-view.js';
 
 const createDescription = (description) => {
   if (description.length > 140) {
@@ -53,7 +53,7 @@ const createFilmTemplate = (film) => {
     </article>`;
 };
 
-class FilmView extends AbstractView {
+export default class FilmView extends AbstractView {
   #film = null;
 
   constructor(film) {
@@ -104,5 +104,3 @@ class FilmView extends AbstractView {
     this._callback.favoriteClick();
   }
 }
-
-export { FilmView };

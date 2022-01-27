@@ -1,14 +1,16 @@
-import { MenuView } from '../view/menu-view.js';
+import MenuView from '../view/menu-view.js';
 import { render, RenderPosition, replace, remove } from '../utils/render.js';
 import { filter } from '../utils/filter.js';
 import { FILTERS_TYPE, UPDATE_TYPE } from '../utils/const.js';
 
-class FilterPresenter {
+export default class FilterPresenter {
   #filterContainer = null;
   #filterModel = null;
   #filmsModel = null;
 
   #filterComponent = null;
+
+  #callback = null;
 
   constructor(filterContainer, filterModel, filmsModel) {
     this.#filterContainer = filterContainer;
@@ -46,12 +48,20 @@ class FilterPresenter {
     ];
   }
 
-  init = () => {
+  init = (callback) => {
     const filters = this.filters;
     const prevFilterComponent = this.#filterComponent;
 
+    if (callback) {
+      this.#callback = callback;
+    }
+
     this.#filterComponent = new MenuView(filters, this.#filterModel.filter);
     this.#filterComponent.setOnFilterTypeClick(this.#onFilterTypeClick);
+
+    this.#filterComponent.setOnStatsClick();
+
+    this.#filterComponent.setOnMenuItemClick(this.#callback);
 
     if (prevFilterComponent === null) {
       render(this.#filterContainer, this.#filterComponent, RenderPosition.BEFOREEND);
@@ -74,5 +84,3 @@ class FilterPresenter {
     this.#filterModel.setFilter(UPDATE_TYPE.MAJOR, filterType);
   }
 }
-
-export { FilterPresenter };

@@ -1,6 +1,6 @@
-import { AbstractObservable } from '../utils/abstract-observable.js';
+import AbstractObservable from '../utils/abstract-observable.js';
 
-class FilmsModel extends AbstractObservable {
+export default class FilmsModel extends AbstractObservable {
   #films = [];
 
   set films(films) {
@@ -56,5 +56,3 @@ class FilmsModel extends AbstractObservable {
     this._notify(updateType, updatedFilm);
   }
 }
-
-export { FilmsModel };

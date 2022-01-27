@@ -1,4 +1,4 @@
-class AbstractObservable {
+export default class AbstractObservable {
   #observers = new Set();
 
   addObserver(observer) {
@@ -13,5 +13,3 @@ class AbstractObservable {
     this.#observers.forEach((observer) => observer(event, payload));
   }
 }
-
-export { AbstractObservable };

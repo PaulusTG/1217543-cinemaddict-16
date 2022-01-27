@@ -1,8 +1,8 @@
-import { FilmView } from '../view/film-view.js';
+import FilmView from '../view/film-view.js';
 import { render, RenderPosition, remove, replace } from '../utils/render.js';
 import { USER_ACTION, UPDATE_TYPE } from '../utils/const.js';
 
-class FilmPresenter {
+export default class FilmPresenter {
   #filmListContainer = null;
   #changeData = null;
 
@@ -72,5 +72,3 @@ class FilmPresenter {
       { ...this.#film, isFavorite: !this.#film.isFavorite });
   }
 }
-
-export { FilmPresenter };
