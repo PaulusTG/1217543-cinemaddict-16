@@ -1,13 +1,13 @@
-import { PopupView } from '../view/popup-view.js';
+import PopupView from '../view/popup-view.js';
 import { render, RenderPosition, remove, replace } from '../utils/render.js';
 import { isEscapeKey } from '../utils/common.js';
 import { USER_ACTION, UPDATE_TYPE } from '../utils/const.js';
-import { CommentsPresenter } from './comments-presenter.js';
+import CommentsPresenter from './comments-presenter.js';
 import { generateFilmComment } from '../mock/comment.js';
 
 const bodyElement = document.querySelector('body');
 
-class PopupPresenter {
+export default class PopupPresenter {
   #filmListContainer = null;
   #changeData = null;
   #resetMode = null;
@@ -138,5 +138,3 @@ class PopupPresenter {
     this.returnScroll();
   }
 }
-
-export { PopupPresenter };

@@ -1,4 +1,4 @@
-import { SmartView } from './smart-view.js';
+import SmartView from './smart-view.js';
 
 const DEFAULT_FILM = {
   title: '',
@@ -122,7 +122,7 @@ const createPopupTemplate = (film) => {
   </section>`;
 };
 
-class PopupView extends SmartView {
+export default class PopupView extends SmartView {
 
   constructor(film = DEFAULT_FILM) {
     super();
@@ -217,5 +217,3 @@ class PopupView extends SmartView {
     return film;
   }
 }
-
-export { PopupView };

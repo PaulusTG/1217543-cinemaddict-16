@@ -1,6 +1,6 @@
 import { createElement } from '../utils/render.js';
 
-class AbstractView {
+export default class AbstractView {
   #element = null;
   _callback = {};
 
@@ -26,5 +26,3 @@ class AbstractView {
     this.#element = null;
   }
 }
-
-export { AbstractView };

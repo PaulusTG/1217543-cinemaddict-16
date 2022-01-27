@@ -1,19 +1,19 @@
-import { BoardView } from '../view/board-view.js';
-import { BoardListView } from '../view/board-list-view.js';
-import { SortView } from '../view/sort-view.js';
+import BoardView from '../view/board-view.js';
+import BoardListView from '../view/board-list-view.js';
+import SortView from '../view/sort-view.js';
 import { SORT_TYPE, USER_ACTION, UPDATE_TYPE, FILTERS_TYPE } from '../utils/const.js';
-import { FilmListView } from '../view/film-list-view.js';
-import { NoFilmView } from '../view/no-film-view.js';
-import { ShowMoreButtonView } from '../view/btn-show-more-view';
-import { FilmPresenter } from './film-presenter.js';
-import { PopupPresenter } from './popup-presenter.js';
+import FilmListView from '../view/film-list-view.js';
+import NoFilmView from '../view/no-film-view.js';
+import ShowMoreButtonView from '../view/btn-show-more-view';
+import FilmPresenter from './film-presenter.js';
+import PopupPresenter from './popup-presenter.js';
 import { render, RenderPosition, remove } from '../utils/render.js';
 import { sortFilmByDate, sortFilmByRating } from '../utils/common.js';
 import { filter } from '../utils/filter.js';
 
 const FILM_COUNT_PER_STEP = 5;
 
-class BoardPresenter {
+export default class BoardPresenter {
   #boardContainer = null;
   #filmsModel = null;
   #filterModel = null;
@@ -32,14 +32,12 @@ class BoardPresenter {
   #filterType = FILTERS_TYPE.ALL;
 
   #openedPopup = null;
+  #isRepeat = false;
 
   constructor(boardContainer, filmsModel, filterModel) {
     this.#boardContainer = boardContainer;
     this.#filmsModel = filmsModel;
     this.#filterModel = filterModel;
-
-    this.#filmsModel.addObserver(this.#onModelEvent);
-    this.#filterModel.addObserver(this.#onModelEvent);
   }
 
   get films() {
@@ -58,7 +56,27 @@ class BoardPresenter {
   }
 
   init = () => {
+    if (this.#isRepeat) {
+      return;
+    }
+
+    this.#filmsModel.addObserver(this.#onModelEvent);
+    this.#filterModel.addObserver(this.#onModelEvent);
+
     this.#renderBoard();
+    this.#isRepeat = true;
+  }
+
+  destroy = () => {
+    this.#clearBoard({ resetRenderedFilmCount: true, resetSortType: true });
+
+    remove(this.#filmsListComponent);
+    remove(this.#boardListComponent);
+    remove(this.#boardComponent);
+
+    this.#filmsModel.removeObserver(this.#onModelEvent);
+    this.#filterModel.removeObserver(this.#onModelEvent);
+    this.#isRepeat = false;
   }
 
   #onModeReset = () => {
@@ -216,5 +234,3 @@ class BoardPresenter {
     }
   }
 }
-
-export { BoardPresenter };

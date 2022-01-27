@@ -70,6 +70,8 @@ const generateDescription = () => {
 
 const generateDate = () => dayjs().month(getRandomNumber(0, 11)).date(getRandomNumber(1, 31)).year(getRandomNumber(1900, 2000));
 
+const generateWatchingDate = () => dayjs().subtract(getRandomNumber(0, 365), 'd');
+
 const generateDuration = () => {
   const hours = getRandomNumber(1, 2);
   const minutes = getRandomNumber(0, 59);
@@ -101,6 +103,8 @@ const generateFilmCard = () => {
   const isWatched = Boolean(getRandomNumber(0, 1));
   const isFavorite = Boolean(getRandomNumber(0, 1));
 
+  const watchingDate = isWatched ? generateWatchingDate() : null;
+
   return {
     id,
     title,
@@ -119,6 +123,7 @@ const generateFilmCard = () => {
     comments,
     isAddedToWatchlist,
     isWatched,
+    watchingDate,
     isFavorite,
   };
 };

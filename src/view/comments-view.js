@@ -1,4 +1,4 @@
-import { SmartView } from './smart-view.js';
+import SmartView from './smart-view.js';
 import { EMOJIES } from '../utils/const.js';
 import { isCtrlPlusEnterKey } from '../utils/common.js';
 import { nanoid } from 'nanoid';
@@ -70,7 +70,7 @@ const createCommentsTemplate = (comments, newCommentSettings) => {
     </section>`;
 };
 
-class CommentsView extends SmartView {
+export default class CommentsView extends SmartView {
   #emojiItems = null;
   #newCommentSettings = {};
   #newComment = {};
@@ -173,5 +173,3 @@ class CommentsView extends SmartView {
     return comment;
   }
 }
-
-export { CommentsView };

@@ -1,7 +1,7 @@
-import { AbstractObservable } from '../utils/abstract-observable.js';
+import AbstractObservable from '../utils/abstract-observable.js';
 import { FILTERS_TYPE } from '../utils/const.js';
 
-class FilterModel extends AbstractObservable {
+export default class FilterModel extends AbstractObservable {
   #filter = FILTERS_TYPE.ALL;
 
   get filter() {
@@ -13,5 +13,3 @@ class FilterModel extends AbstractObservable {
     this._notify(updateType, filter);
   }
 }
-
-export { FilterModel };
