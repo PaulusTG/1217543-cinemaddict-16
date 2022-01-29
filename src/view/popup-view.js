@@ -1,36 +1,38 @@
 import SmartView from './smart-view.js';
+import { getDurationByMinutes } from '../utils/common.js';
+import dayjs from 'dayjs';
 
 const DEFAULT_FILM = {
-  title: '',
-  rating: '0.0',
-  info: {
+  filmInfo: {
+    title: '',
+    alternativeTitle: '',
+    rating: '0.0',
+    ageRating: 18,
     date: null,
     duration: null,
-    genre: '',
+    genre: [],
     director: '',
     writers: '',
     actors: '',
     country: '',
+    poster: '',
+    description: '',
   },
-  poster: '',
-  description: '',
   comments: [],
   isAddedToWatchlist: false,
   isWatched: false,
   isFavorite: false,
 };
 
-const createPopupTemplate = (film) => {
+const createPopupTemplate = (film = DEFAULT_FILM) => {
   const {
-    title,
-    rating,
-    info,
-    poster,
-    description,
+    filmInfo,
     isAddedToWatchlist,
     isWatched,
     isFavorite,
   } = film;
+
+  const genresList = filmInfo.genre.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
   const watchlistClassName = isAddedToWatchlist
     ? 'film-details__control-button--active'
@@ -52,59 +54,57 @@ const createPopupTemplate = (film) => {
         </div>
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
-            <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
+            <img class="film-details__poster-img" src="${filmInfo.poster}" alt="">
 
-            <p class="film-details__age">18+</p>
+            <p class="film-details__age">${filmInfo.ageRating}+</p>
           </div>
 
           <div class="film-details__info">
             <div class="film-details__info-head">
               <div class="film-details__title-wrap">
-                <h3 class="film-details__title">${title}</h3>
-                <p class="film-details__title-original">Original: ${title}</p>
+                <h3 class="film-details__title">${filmInfo.title}</h3>
+                <p class="film-details__title-original">Original: ${filmInfo.alternativeTitle}</p>
               </div>
 
               <div class="film-details__rating">
-                <p class="film-details__total-rating">${rating}</p>
+                <p class="film-details__total-rating">${filmInfo.rating}</p>
               </div>
             </div>
 
             <table class="film-details__table">
               <tr class="film-details__row">
                 <td class="film-details__term">Director</td>
-                <td class="film-details__cell">${info.director}</td>
+                <td class="film-details__cell">${filmInfo.director}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Writers</td>
-                <td class="film-details__cell">${info.writers}</td>
+                <td class="film-details__cell">${filmInfo.writers}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Actors</td>
-                <td class="film-details__cell">${info.actors}</td>
+                <td class="film-details__cell">${filmInfo.actors}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${info.date.format('D MMMM YYYY')}</td>
+                <td class="film-details__cell">${dayjs(filmInfo.date).format('D MMMM YYYY')}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${info.duration.format('h[h] m[m]')}</td>
+                <td class="film-details__cell">${getDurationByMinutes(filmInfo.duration).format('H[h] m[m]')}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
-                <td class="film-details__cell">${info.country}</td>
+                <td class="film-details__cell">${filmInfo.country}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Genres</td>
                 <td class="film-details__cell">
-                  <span class="film-details__genre">${info.genre[0]}</span>
-                  <span class="film-details__genre">${info.genre[1]}</span>
-                  <span class="film-details__genre">${info.genre[2]}</span></td>
+                  ${genresList}</td>
               </tr>
             </table>
 
             <p class="film-details__film-description">
-              ${description}
+              ${filmInfo.description}
             </p>
           </div>
         </div>

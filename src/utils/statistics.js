@@ -1,9 +1,12 @@
 import dayjs from 'dayjs';
 import isToday from 'dayjs/plugin/isToday';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import Duration from 'dayjs/plugin/duration';
+import { getDurationByMinutes } from './common.js';
 
 dayjs.extend(isToday);
 dayjs.extend(isSameOrAfter);
+dayjs.extend(Duration);
 
 const StatsDateRange = {
   'all-time': (films) => films.filter((film) => film.isWatched),
@@ -14,15 +17,15 @@ const StatsDateRange = {
 };
 
 const GenreToFilterMap = {
-  'Family': (films) => films.filter((film) => film.isWatched && film.info.genre.includes('Family')).length,
-  'Sci-Fi': (films) => films.filter((film) => film.isWatched && film.info.genre.includes('Sci-Fi')).length,
-  'Action': (films) => films.filter((film) => film.isWatched && film.info.genre.includes('Action')).length,
-  'Thriller': (films) => films.filter((film) => film.isWatched && film.info.genre.includes('Thriller')).length,
-  'Horror': (films) => films.filter((film) => film.isWatched && film.info.genre.includes('Horror')).length,
-  'Comedy': (films) => films.filter((film) => film.isWatched && film.info.genre.includes('Comedy')).length,
-  'Drama': (films) => films.filter((film) => film.isWatched && film.info.genre.includes('Drama')).length,
-  'Adventure': (films) => films.filter((film) => film.isWatched && film.info.genre.includes('Adventure')).length,
-  'Animation': (films) => films.filter((film) => film.isWatched && film.info.genre.includes('Animation')).length,
+  'Family': (films) => films.filter((film) => film.isWatched && film.filmInfo.genre.includes('Family')).length,
+  'Sci-Fi': (films) => films.filter((film) => film.isWatched && film.filmInfo.genre.includes('Sci-Fi')).length,
+  'Action': (films) => films.filter((film) => film.isWatched && film.filmInfo.genre.includes('Action')).length,
+  'Thriller': (films) => films.filter((film) => film.isWatched && film.filmInfo.genre.includes('Thriller')).length,
+  'Horror': (films) => films.filter((film) => film.isWatched && film.filmInfo.genre.includes('Horror')).length,
+  'Comedy': (films) => films.filter((film) => film.isWatched && film.filmInfo.genre.includes('Comedy')).length,
+  'Drama': (films) => films.filter((film) => film.isWatched && film.filmInfo.genre.includes('Drama')).length,
+  'Adventure': (films) => films.filter((film) => film.isWatched && film.filmInfo.genre.includes('Adventure')).length,
+  'Animation': (films) => films.filter((film) => film.isWatched && film.filmInfo.genre.includes('Animation')).length,
 };
 
 const getSortedGenres = (films) => Object.entries(GenreToFilterMap).map(
@@ -45,19 +48,18 @@ const getRank = (watched) => {
 };
 
 const countTotalDuration = (films) => {
-  let totalHours = 0;
-  let totalMinutes = 0;
+  let duration = dayjs.duration(0, 'm');
 
-  films.map((film) => {
+  films.forEach((film) => {
     if (film.isWatched) {
-      totalHours += Number(film.info.duration.format('h'));
-      totalMinutes += Number(film.info.duration.format('m'));
+      duration = duration.add(getDurationByMinutes(film.filmInfo.duration));
     }
   });
-  totalHours += (Math.floor(totalMinutes / 60));
-  totalMinutes -= (Math.floor(totalMinutes / 60)) * 60;
 
-  return `<p class="statistic__item-text">${totalHours} <span class="statistic__item-description">h</span> ${totalMinutes} <span class="statistic__item-description">m</span></p>`;
+  return `<p class="statistic__item-text">${Number(duration.format('D')) > 0
+    ? (Number(duration.format('D')) * 24) + Number(duration.format('H'))
+    : duration.format('H')}
+    <span class="statistic__item-description">h</span> ${duration.format('m')} <span class="statistic__item-description">m</span></p>`;
 };
 
 const countWatchedFilms = (films) => films.filter((film) => film.isWatched).length;

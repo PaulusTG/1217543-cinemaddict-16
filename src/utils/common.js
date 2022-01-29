@@ -1,4 +1,7 @@
 import dayjs from 'dayjs';
+import Duration from 'dayjs/plugin/duration';
+
+dayjs.extend(Duration);
 
 const getRandomNumber = (min = 0, max = 1) => {
   min = Math.ceil(Math.min(min, max));
@@ -33,4 +36,6 @@ const sortFilmByDate = (filmA, filmB) => dayjs(filmB.info.date).diff(dayjs(filmA
 
 const sortFilmByRating = (filmA, filmB) => filmB.rating - filmA.rating;
 
-export { getRandomNumber, getRandomFloat, getRandomRangeFromArray, isEscapeKey, isCtrlPlusEnterKey, sortFilmByDate, sortFilmByRating };
+const getDurationByMinutes = (duration) => dayjs.duration(duration, 'm');
+
+export { getRandomNumber, getRandomFloat, getRandomRangeFromArray, isEscapeKey, isCtrlPlusEnterKey, sortFilmByDate, sortFilmByRating, getDurationByMinutes };

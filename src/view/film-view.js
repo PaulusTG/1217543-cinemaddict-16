@@ -1,4 +1,6 @@
 import AbstractView from './abstract-view.js';
+import { getDurationByMinutes } from '../utils/common.js';
+import dayjs from 'dayjs';
 
 const createDescription = (description) => {
   if (description.length > 140) {
@@ -9,11 +11,7 @@ const createDescription = (description) => {
 
 const createFilmTemplate = (film) => {
   const {
-    title,
-    rating,
-    info,
-    poster,
-    description,
+    filmInfo,
     comments,
     isAddedToWatchlist,
     isWatched,
@@ -34,15 +32,15 @@ const createFilmTemplate = (film) => {
 
   return `<article class="film-card">
       <a class="film-card__link">
-        <h3 class="film-card__title">${title}</h3>
-        <p class="film-card__rating">${rating}</p>
+        <h3 class="film-card__title">${filmInfo.title}</h3>
+        <p class="film-card__rating">${filmInfo.rating}</p>
         <p class="film-card__info">
-          <span class="film-card__year">${info.date.format('YYYY')}</span>
-          <span class="film-card__duration">${info.duration.format('h[h] m[m]')}</span>
-          <span class="film-card__genre">${info.genre[0]}</span>
+          <span class="film-card__year">${dayjs(filmInfo.date).format('YYYY')}</span>
+          <span class="film-card__duration">${getDurationByMinutes(filmInfo.duration).format('H[h] m[m]')}</span>
+          <span class="film-card__genre">${filmInfo.genre[0]}</span>
         </p>
-        <img src="./images/posters/${poster}" alt="" class="film-card__poster">
-        <p class="film-card__description">${createDescription(description)}</p>
+        <img src="${filmInfo.poster}" alt="" class="film-card__poster">
+        <p class="film-card__description">${createDescription(filmInfo.description)}</p>
         <span class="film-card__comments">${comments.length} comments</span>
       </a>
       <div class="film-card__controls">
