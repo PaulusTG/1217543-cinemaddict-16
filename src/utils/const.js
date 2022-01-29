@@ -23,6 +23,7 @@ const UPDATE_TYPE = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 const MENU_ITEM = {
@@ -30,4 +31,7 @@ const MENU_ITEM = {
   STATISTICS: 'STATISTICS',
 };
 
-export { FILTERS_TYPE, SORT_TYPE, EMOJIES, USER_ACTION, UPDATE_TYPE, MENU_ITEM };
+const AUTHORIZATION = 'Basic g2f2d0t8khzgjkjd';
+const END_POINT = 'https://16.ecmascript.pages.academy/cinemaddict';
+
+export { FILTERS_TYPE, SORT_TYPE, EMOJIES, USER_ACTION, UPDATE_TYPE, MENU_ITEM, AUTHORIZATION, END_POINT };

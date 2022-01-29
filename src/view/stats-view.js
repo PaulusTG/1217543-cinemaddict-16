@@ -146,7 +146,7 @@ export default class StatsView extends SmartView {
     this.#currentFilter = 'all-time';
 
     this.#setChart();
-    this.setOnStatsFilterChange();
+    this.#setOnStatsFilterChange();
   }
 
   get template() {
@@ -164,10 +164,10 @@ export default class StatsView extends SmartView {
 
   restoreHandlers = () => {
     this.#setChart();
-    this.setOnStatsFilterChange();
+    this.#setOnStatsFilterChange();
   }
 
-  setOnStatsFilterChange = () => {
+  #setOnStatsFilterChange = () => {
     this.element.querySelectorAll('.statistic__filters-input')
       .forEach((input) => input.addEventListener('change', this.#onStatsFilterChange));
   }

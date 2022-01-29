@@ -5,16 +5,16 @@ import { nanoid } from 'nanoid';
 import dayjs from 'dayjs';
 import he from 'he';
 
-const createCommentTemplate = ({ id, emoji, text, author, datetime }) => (
+const createCommentTemplate = ({ id, emotion, comment, author, date }) => (
   `<li data-id="${id}" class="film-details__comment">
     <span class="film-details__comment-emoji">
-      <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
+      <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
     </span>
     <div>
-      <p class="film-details__comment-text">${text}</p>
+      <p class="film-details__comment-text">${comment}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
-        <span class="film-details__comment-day">${datetime}</span>
+        <span class="film-details__comment-day">${dayjs(date).format('YYYY/M/D H:mm')}</span>
         <button data-id="${id}" class="film-details__comment-delete">Delete</button>
       </p>
     </div>
@@ -131,10 +131,10 @@ export default class CommentsView extends SmartView {
 
       this.#newComment = {
         id: nanoid(),
-        emoji: this.#newCommentSettings.newCommentEmoji,
-        text: newCommentText,
+        emotion: this.#newCommentSettings.newCommentEmoji,
+        comment: newCommentText,
         author: 'Paulus TG',
-        datetime: dayjs().format('YYYY/M/D H:m'),
+        date: dayjs().format('YYYY/M/D H:m'),
       };
 
       this._callback.addComment(this.#newComment);

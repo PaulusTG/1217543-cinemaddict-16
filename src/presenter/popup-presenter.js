@@ -3,7 +3,7 @@ import { render, RenderPosition, remove, replace } from '../utils/render.js';
 import { isEscapeKey } from '../utils/common.js';
 import { USER_ACTION, UPDATE_TYPE } from '../utils/const.js';
 import CommentsPresenter from './comments-presenter.js';
-import { generateFilmComment } from '../mock/comment.js';
+import dayjs from 'dayjs';
 
 const bodyElement = document.querySelector('body');
 
@@ -20,7 +20,6 @@ export default class PopupPresenter {
   #commentsPresenters = new Map();
 
   #film = null;
-  #comments = null;
   #scrollPosY = 0;
 
   constructor(filmListContainer, changeData, resetMode) {
@@ -31,12 +30,9 @@ export default class PopupPresenter {
 
   isPopupOpened = () => this.#isOpened;
 
-  getComments = (comments) => comments.map((id) => generateFilmComment(id));
-
   init = (film) => {
     this.#resetMode();
     this.#film = film;
-    this.#comments = this.getComments(film.comments);
 
     this.#isOpened = true;
     bodyElement.classList.add('hide-overflow');
@@ -54,13 +50,13 @@ export default class PopupPresenter {
 
     if (prevFilmPopupComponent === null) {
       render(this.#filmListContainer, this.#filmPopupComponent, RenderPosition.BEFOREEND);
-      this.renderComments(film, this.#comments);
+      this.renderComments(film);
       this.returnScroll();
       return;
     }
 
     replace(this.#filmPopupComponent, prevFilmPopupComponent);
-    this.renderComments(film, this.#comments);
+    this.renderComments(film);
     this.returnScroll();
 
     remove(prevFilmPopupComponent);
@@ -71,11 +67,11 @@ export default class PopupPresenter {
     remove(this.#filmPopupComponent);
   }
 
-  renderComments = (film, comments) => {
+  renderComments = (film) => {
     this.#commentsContainer = this.#filmPopupComponent.element.querySelector('.film-details__bottom-container');
     const commentsPresenter = new CommentsPresenter(this.#commentsContainer, this.#changeData, film.id);
 
-    commentsPresenter.init(comments);
+    commentsPresenter.init();
     this.returnScroll();
     this.#commentsPresenters.set(film.id, commentsPresenter);
   }
@@ -124,7 +120,11 @@ export default class PopupPresenter {
     this.#changeData(
       USER_ACTION.UPDATE_FILM,
       UPDATE_TYPE.MINOR,
-      { ...this.#film, isWatched: !this.#film.isWatched });
+      {
+        ...this.#film,
+        isWatched: !this.#film.isWatched,
+        watchingDate: !this.#film.isWatched ? dayjs() : null,
+      });
 
     this.returnScroll();
   }

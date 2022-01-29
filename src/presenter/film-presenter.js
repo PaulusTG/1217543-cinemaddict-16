@@ -1,6 +1,7 @@
 import FilmView from '../view/film-view.js';
 import { render, RenderPosition, remove, replace } from '../utils/render.js';
 import { USER_ACTION, UPDATE_TYPE } from '../utils/const.js';
+import dayjs from 'dayjs';
 
 export default class FilmPresenter {
   #filmListContainer = null;
@@ -62,7 +63,11 @@ export default class FilmPresenter {
     this.#changeData(
       USER_ACTION.UPDATE_FILM,
       UPDATE_TYPE.MINOR,
-      { ...this.#film, isWatched: !this.#film.isWatched });
+      {
+        ...this.#film,
+        isWatched: !this.#film.isWatched,
+        watchingDate: !this.#film.isWatched ? dayjs() : null,
+      });
   }
 
   #onFavoriteClick = () => {
