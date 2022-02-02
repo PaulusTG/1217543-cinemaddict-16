@@ -9,7 +9,7 @@ import ShowMoreButtonView from '../view/btn-show-more-view';
 import FilmPresenter from './film-presenter.js';
 import PopupPresenter from './popup-presenter.js';
 import { render, RenderPosition, remove } from '../utils/render.js';
-import { sortFilmByDate, sortFilmByRating } from '../utils/common.js';
+import { sortFilmByDate, sortFilmByRating, sortFilmByDefault } from '../utils/common.js';
 import { filter } from '../utils/filter.js';
 
 const FILM_COUNT_PER_STEP = 5;
@@ -49,6 +49,8 @@ export default class BoardPresenter {
     const filteredFilms = filter[this.#filterType](films);
 
     switch (this.#currentSortType) {
+      case SORT_TYPE.DEFAULT:
+        return filteredFilms.sort(sortFilmByDefault);
       case SORT_TYPE.BY_DATE:
         return filteredFilms.sort(sortFilmByDate);
       case SORT_TYPE.BY_RATING:
@@ -86,16 +88,26 @@ export default class BoardPresenter {
     this.#popupPresenters.forEach((presenter) => presenter.closePopupToFilm());
   }
 
-  #onViewAction = (actionType, updateType, update) => {
+  #onViewAction = async (actionType, updateType, update) => {
     switch (actionType) {
       case USER_ACTION.UPDATE_FILM:
         this.#filmsModel.updateFilm(updateType, update);
         break;
       case USER_ACTION.DELETE_COMMENT:
-        this.#filmsModel.deleteComment(updateType, update);
+        try {
+          this.#popupPresenters.get(update.filmId).setDeletingComment(update.commentId);
+          await this.#filmsModel.deleteComment(updateType, update);
+        } catch (err) {
+          this.#popupPresenters.get(update.filmId).setAborting();
+        }
         break;
       case USER_ACTION.ADD_COMMENT:
-        this.#filmsModel.addComment(updateType, update);
+        try {
+          this.#popupPresenters.get(update.filmId).setAddingComment(true);
+          await this.#filmsModel.addComment(updateType, update);
+        } catch (err) {
+          this.#popupPresenters.get(update.filmId).setAborting();
+        }
         break;
     }
   }

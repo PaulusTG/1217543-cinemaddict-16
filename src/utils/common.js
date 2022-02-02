@@ -32,10 +32,12 @@ const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
 const isCtrlPlusEnterKey = (evt) => evt.ctrlKey && evt.key === 'Enter';
 
-const sortFilmByDate = (filmA, filmB) => dayjs(filmB.info.date).diff(dayjs(filmA.info.date));
+const sortFilmByDate = (filmA, filmB) => dayjs(filmB.filmInfo.date).diff(dayjs(filmA.filmInfo.date));
 
-const sortFilmByRating = (filmA, filmB) => filmB.rating - filmA.rating;
+const sortFilmByRating = (filmA, filmB) => filmB.filmInfo.rating - filmA.filmInfo.rating;
+
+const sortFilmByDefault = (filmA, filmB) => filmB.id - filmA.id;
 
 const getDurationByMinutes = (duration) => dayjs.duration(duration, 'm');
 
-export { getRandomNumber, getRandomFloat, getRandomRangeFromArray, isEscapeKey, isCtrlPlusEnterKey, sortFilmByDate, sortFilmByRating, getDurationByMinutes };
+export { getRandomNumber, getRandomFloat, getRandomRangeFromArray, isEscapeKey, isCtrlPlusEnterKey, sortFilmByDate, sortFilmByRating, sortFilmByDefault, getDurationByMinutes };

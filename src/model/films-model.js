@@ -46,33 +46,34 @@ export default class FilmsModel extends AbstractObservable {
     }
   }
 
-  deleteComment = (updateType, update) => {
+  deleteComment = async (updateType, update) => {
     const { filmId, commentId } = update;
 
-    this.#films.map((film) => {
-      if (film.id === filmId) {
-        film.comments = film.comments.filter((comment) => comment !== commentId);
-      }
-    });
+    try {
+      await this.#apiService.deleteComment(commentId);
+      const updatedFilm = this.#films.find((film) => film.id === filmId);
 
-    const updatedFilm = this.#films.find((film) => film.id === filmId);
+      updatedFilm.comments = updatedFilm.comments.filter((comment) => comment !== commentId);
 
-    this._notify(updateType, updatedFilm);
+      this._notify(updateType, updatedFilm);
+    } catch (err) {
+      throw new Error('Can\'t delete comment');
+    }
   }
 
-  addComment = (updateType, update) => {
+  addComment = async (updateType, update) => {
     const { filmId, newComment } = update;
-    const { id } = newComment;
 
-    this.#films.map((film) => {
-      if (film.id === filmId) {
-        film.comments.push(id);
-      }
-    });
+    try {
+      const response = await this.#apiService.addComment(filmId, newComment);
+      const updatedFilm = this.#films.find((film) => film.id === filmId);
 
-    const updatedFilm = this.#films.find((film) => film.id === filmId);
+      updatedFilm.comments = response.comments;
 
-    this._notify(updateType, updatedFilm);
+      this._notify(updateType, updatedFilm);
+    } catch (err) {
+      throw new Error('Can\'t add comment');
+    }
   }
 
   #adaptToClient = (film) => {

@@ -1,12 +1,13 @@
 import SmartView from './smart-view.js';
 import { EMOJIES } from '../utils/const.js';
 import { isCtrlPlusEnterKey } from '../utils/common.js';
-import { nanoid } from 'nanoid';
 import dayjs from 'dayjs';
 import he from 'he';
 
-const createCommentTemplate = ({ id, emotion, comment, author, date }) => (
-  `<li data-id="${id}" class="film-details__comment">
+const createCommentTemplate = ({ id, emotion, comment, author, date }, deletingComment) => {
+  const isDeleting = id === deletingComment;
+
+  return `<li data-id="${id}" class="film-details__comment">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
     </span>
@@ -15,15 +16,16 @@ const createCommentTemplate = ({ id, emotion, comment, author, date }) => (
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${dayjs(date).format('YYYY/M/D H:mm')}</span>
-        <button data-id="${id}" class="film-details__comment-delete">Delete</button>
+        <button data-id="${id}" class="film-details__comment-delete" ${deletingComment ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
       </p>
     </div>
-  </li>`);
+  </li>`;
+};
 
-const createComments = (comments) => {
+const createComments = (comments, deletingComment) => {
   let commentsList = [];
 
-  commentsList = comments.map((comment) => createCommentTemplate(comment));
+  commentsList = comments.map((comment) => createCommentTemplate(comment, deletingComment));
 
   return commentsList.join('');
 };
@@ -36,13 +38,13 @@ const createEmojiListTemplate = () => (
   </label>`).join('')
 );
 
-const createCommentsTemplate = (comments, newCommentSettings) => {
+const createCommentsTemplate = (comments, newCommentSettings, deletingComment) => {
   const {
     isEmojiChoosen,
     newCommentEmoji,
   } = newCommentSettings;
 
-  const commentsList = createComments(comments);
+  const commentsList = createComments(comments, deletingComment);
   const emojiList = createEmojiListTemplate();
 
   const choosenEmoji = isEmojiChoosen
@@ -74,16 +76,19 @@ export default class CommentsView extends SmartView {
   #emojiItems = null;
   #newCommentSettings = {};
   #newComment = {};
+  #deletingComment = '';
 
-  constructor(comment) {
+  constructor(comments, deletingComment) {
     super();
-    this._data = comment;
+    this._data = comments;
+
+    this.#deletingComment = deletingComment;
 
     this.#setInnerHandlers();
   }
 
   get template() {
-    return createCommentsTemplate(this._data, this.#newCommentSettings);
+    return createCommentsTemplate(this._data, this.#newCommentSettings, this.#deletingComment);
   }
 
   restoreHandlers = () => {
@@ -92,9 +97,9 @@ export default class CommentsView extends SmartView {
     this.setOnAddCommentByEnterKeydown();
   }
 
-  reset = (comment) => {
+  reset = (comments) => {
     this.updateData(
-      CommentsView.parseCommentToData(comment),
+      CommentsView.parseCommentToData(comments),
     );
   }
 
@@ -130,11 +135,8 @@ export default class CommentsView extends SmartView {
     if (this.#newCommentSettings.isEmojiChoosen && newCommentText !== '' && isCtrlPlusEnterKey(evt)) {
 
       this.#newComment = {
-        id: nanoid(),
         emotion: this.#newCommentSettings.newCommentEmoji,
         comment: newCommentText,
-        author: 'Paulus TG',
-        date: dayjs().format('YYYY/M/D H:m'),
       };
 
       this._callback.addComment(this.#newComment);

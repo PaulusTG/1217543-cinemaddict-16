@@ -24,7 +24,7 @@ const DEFAULT_FILM = {
   isFavorite: false,
 };
 
-const createPopupTemplate = (film = DEFAULT_FILM) => {
+const createPopupTemplate = (film, isAddingComment) => {
   const {
     filmInfo,
     isAddedToWatchlist,
@@ -47,7 +47,7 @@ const createPopupTemplate = (film = DEFAULT_FILM) => {
     : '';
 
   return `<section class="film-details">
-    <form class="film-details__inner" action="" method="get">
+    <form class="film-details__inner" action="" method="get" ${isAddingComment ? 'disabled' : ''}>
       <div class="film-details__top-container">
         <div class="film-details__close">
           <button class="film-details__close-btn" type="button">close</button>
@@ -123,14 +123,16 @@ const createPopupTemplate = (film = DEFAULT_FILM) => {
 };
 
 export default class PopupView extends SmartView {
+  #addingComment = false;
 
-  constructor(film = DEFAULT_FILM) {
+  constructor(film = DEFAULT_FILM, addingComment) {
     super();
     this._data = PopupView.parseFilmToData(film);
+    this.#addingComment = addingComment;
   }
 
   get template() {
-    return createPopupTemplate(this._data);
+    return createPopupTemplate(this._data, this.#addingComment);
   }
 
   restoreHandlers = () => {

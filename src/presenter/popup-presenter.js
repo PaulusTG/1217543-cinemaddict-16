@@ -22,6 +22,9 @@ export default class PopupPresenter {
   #film = null;
   #scrollPosY = 0;
 
+  #deletingComment = '';
+  #addingComment = false;
+
   constructor(filmListContainer, changeData, resetMode) {
     this.#filmListContainer = filmListContainer;
     this.#changeData = changeData;
@@ -29,6 +32,32 @@ export default class PopupPresenter {
   }
 
   isPopupOpened = () => this.#isOpened;
+
+  setDeletingComment = (commentId = '') => {
+    this.#deletingComment = commentId;
+    this.#commentsPresenters.get(this.#film.id).setDeleting(this.#deletingComment);
+    this.#commentsPresenters.get(this.#film.id).init();
+    this.returnScroll();
+  }
+
+  setAddingComment = (addingComment = false) => {
+    this.#addingComment = addingComment;
+    this.init(this.#film);
+    this.returnScroll();
+  }
+
+  setAborting = () => {
+    if (this.#addingComment) {
+      this.#filmPopupComponent.shake(this.setAddingComment);
+      this.returnScroll();
+      return;
+    }
+
+    if (this.#deletingComment !== '') {
+      this.#commentsPresenters.get(this.#film.id).setAborting();
+      this.returnScroll();
+    }
+  }
 
   init = (film) => {
     this.#resetMode();
@@ -39,7 +68,7 @@ export default class PopupPresenter {
 
     const prevFilmPopupComponent = this.#filmPopupComponent;
 
-    this.#filmPopupComponent = new PopupView(film);
+    this.#filmPopupComponent = new PopupView(film, this.#addingComment);
 
     this.#filmPopupComponent.setOnClosePopupClick(this.#onClosePopupClick);
     this.#filmPopupComponent.setOnAddToWatchlistClick(this.#onAddToWatchlistClick);
