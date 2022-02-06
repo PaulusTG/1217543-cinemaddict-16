@@ -2,7 +2,10 @@ import SmartView from './smart-view.js';
 import { EMOJIES } from '../utils/const.js';
 import { isCtrlPlusEnterKey } from '../utils/common.js';
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import he from 'he';
+
+dayjs.extend(relativeTime);
 
 const createCommentTemplate = ({ id, emotion, comment, author, date }, deletingComment) => {
   const isDeleting = id === deletingComment;
@@ -15,7 +18,7 @@ const createCommentTemplate = ({ id, emotion, comment, author, date }, deletingC
       <p class="film-details__comment-text">${comment}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
-        <span class="film-details__comment-day">${dayjs(date).format('YYYY/M/D H:mm')}</span>
+        <span class="film-details__comment-day">${dayjs(date).toNow()}</span>
         <button data-id="${id}" class="film-details__comment-delete" ${deletingComment ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
       </p>
     </div>

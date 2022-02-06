@@ -38,6 +38,11 @@ const sortFilmByRating = (filmA, filmB) => filmB.filmInfo.rating - filmA.filmInf
 
 const sortFilmByDefault = (filmA, filmB) => filmB.id - filmA.id;
 
+const sortFilmByMostCommented = (filmA, filmB) => filmB.comments.length - filmA.comments.length;
+
 const getDurationByMinutes = (duration) => dayjs.duration(duration, 'm');
 
-export { getRandomNumber, getRandomFloat, getRandomRangeFromArray, isEscapeKey, isCtrlPlusEnterKey, sortFilmByDate, sortFilmByRating, sortFilmByDefault, getDurationByMinutes };
+export {
+  getRandomNumber, getRandomFloat, getRandomRangeFromArray, isEscapeKey, isCtrlPlusEnterKey,
+  sortFilmByDate, sortFilmByRating, sortFilmByDefault, sortFilmByMostCommented, getDurationByMinutes
+};
